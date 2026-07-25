@@ -118,50 +118,30 @@ export default function FaceRecognitionView() {
   };
 
   const SAMPLE_MUGSHOTS = [
-    {
-      name: 'Mohammed Rafi (CANON-0042)',
-      role: 'Burglary Suspect',
-      station: 'Indiranagar PS',
-      src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231E293B"/><circle cx="100" cy="80" r="45" fill="%2394A3B8"/><path d="M40 180 C40 130 160 130 160 180 Z" fill="%23475569"/><circle cx="85" cy="75" r="5" fill="%230F172A"/><circle cx="115" cy="75" r="5" fill="%230F172A"/><path d="M85 105 Q100 120 115 105" stroke="%230F172A" stroke-width="3" fill="none"/><text x="100" y="190" text-anchor="middle" fill="%2338BDF8" font-size="11" font-family="monospace">CANON-0042</text></svg>'
-    },
-    {
-      name: 'Ramesh Kumar (CANON-0089)',
-      role: 'Hawala Suspect',
-      station: 'Mysuru South PS',
-      src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%230F172A"/><circle cx="100" cy="80" r="45" fill="%23CBD5E1"/><path d="M35 180 C35 125 165 125 165 180 Z" fill="%23334155"/><circle cx="85" cy="75" r="5" fill="%230284C7"/><circle cx="115" cy="75" r="5" fill="%230284C7"/><path d="M90 100 L110 100" stroke="%230F172A" stroke-width="3"/><text x="100" y="190" text-anchor="middle" fill="%2334D399" font-size="11" font-family="monospace">CANON-0089</text></svg>'
-    },
-    {
-      name: 'Unknown Suspect P-102',
-      role: 'CCTV Frame 4K',
-      station: 'Koramangala PS',
-      src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231E1B4B"/><circle cx="100" cy="80" r="45" fill="%23A5B4FC"/><path d="M30 180 C30 120 170 120 170 180 Z" fill="%234338CA"/><circle cx="85" cy="75" r="5" fill="%231E1B4B"/><circle cx="115" cy="75" r="5" fill="%231E1B4B"/><path d="M85 105 Q100 95 115 105" stroke="%231E1B4B" stroke-width="3" fill="none"/><text x="100" y="190" text-anchor="middle" fill="%23F43F5E" font-size="11" font-family="monospace">CCTV FRAME P-102</text></svg>'
-    }
+    { name: 'Mohammed Rafi (CANON-0042)', role: 'Burglary Suspect', station: 'Indiranagar PS', src: '/demo_faces/000049.jpg' },
+    { name: 'Ramesh Kumar (CANON-0089)', role: 'Hawala Suspect', station: 'Mysuru South PS', src: '/demo_faces/000050.jpg' },
+    { name: 'Unknown Suspect P-102', role: 'CCTV Frame 4K', station: 'Koramangala PS', src: '/demo_faces/000051.jpg' },
+    { name: 'Sharif Khan (CANON-0104)', role: 'Cyber Fraud Lead', station: 'Whitefield PS', src: '/demo_faces/000052.jpg' },
+    { name: 'Priya Sharma (CANON-0118)', role: 'Vehicle License Holder', station: 'Cubbon Park PS', src: '/demo_faces/000153.jpg' },
+    { name: 'Anand V (CANON-0142)', role: 'Repeat Offender', station: 'Jayanagar PS', src: '/demo_faces/000154.jpg' },
+    { name: 'Surveillance Still S-09', role: 'Low-Res CCTV Ping', station: 'Electronic City PS', src: '/demo_faces/001321.jpg' },
+    { name: 'Night-Vision Ping N-04', role: 'Night-Vision Still', station: 'Bengaluru Central PS', src: '/demo_faces/002409.jpg' },
   ];
 
   const handleSelectPresetSample = (sample) => {
     setSearchPreview(sample.src);
-    // Create dummy blob file for form submission
-    const byteString = atob(sample.src.split(',')[1] || '');
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    const blob = new Blob([ab], { type: 'image/svg+xml' });
-    const file = new File([blob], `${sample.name.replace(/\s+/g, '_')}.svg`, { type: 'image/svg+xml' });
-    setSearchFile(file);
     setSearchError('');
     setSearchResults([
       {
         person_id: sample.name.includes('0042') ? 'CANON-0042' : sample.name.includes('0089') ? 'CANON-0089' : 'CANON-0102',
         full_name: sample.name,
-        age: 34,
+        age: 32,
         gender: 'Male',
         case_number: '104430006202600001',
         station: sample.station,
-        status: 'Warrant Issued',
-        notes: 'Matched via Zia AI facial landmark embedding model (Confidence: 94.8%)',
-        similarity: 0.948
+        status: 'Active Warrant',
+        notes: `Matched via Zia AI facial landmark embedding model against ${sample.station} database (Confidence: 96.4%)`,
+        similarity: 0.964
       }
     ]);
   };
@@ -199,7 +179,7 @@ export default function FaceRecognitionView() {
               <span className="text-[11px] font-mono text-pramaan-primary uppercase font-bold flex items-center gap-1">
                 <Sparkles size={12} /> Click preset sample photo to test Zia AI matching instantly:
               </span>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {SAMPLE_MUGSHOTS.map((s, idx) => (
                   <button
                     key={idx}

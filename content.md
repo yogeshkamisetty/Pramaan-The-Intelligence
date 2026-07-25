@@ -164,6 +164,11 @@ The Pramaan backend is built as a unified, high-performance containerized **Fast
 * **Wired Citizen HelpDesk Chatbot**: Connected `HelpDeskView.jsx` directly to `api.ragQuery()` for live Gemini-powered citizen Q&A with fallbacks for emergency hotlines (112, 1930) and CrPC Section 154 guidance.
 * **Visual SVG Media & Data Enrichment**: Added high-resolution SVG visual assets (`ksp_badge.svg`, `crime_scene.svg`, `command_center.svg`), suspect profiles with mugshots, station locations, and case timelines in `mock.js`. Integrated a Crime Category Breakdown pie chart into `OverviewView.jsx` and evidence media previews into `CasesView.jsx`.
 
+### Phase 8: Case Twin Workspace Redesign, Real-Time Satellite GEOINT, & Entity Graph Inspector
+* **Case Twin Intelligence Redesign (`SimilarCasesView.jsx`)**: Transformed case twin matching into an intuitive side-by-side comparison workspace with English/Kannada narrative previews, color-coded vector similarity progress bars, 1-click weight presets (*Balanced*, *MO Heavy*, *Geo Radius*), and automated "Why These Cases Matched" evidence checklists.
+* **Real-Time Satellite GEOINT Map (`HotspotMap.jsx` & `LiveMapView.jsx`)**: Added a 1-click map layer switcher supporting **Real-Time Satellite** (`Esri World Imagery`), **Dark Command Vector** (`CartoDB`), and **Street Map** (`OSM`). Integrated animated real-time radar halos for spatial crime hotspots and active target mobile signal pings (`-62 dBm`, `4G LTE`).
+* **Interactive Entity Graph Match Inspector (`EntityGraphView.jsx`)**: Built an interactive pop-up modal/inspector displaying suspect profiles, risk badges, and **explicit match reasons per connected relationship** (e.g., *"82% MO Similarity twin match"*, *"ANPR camera ping at Indiranagar burglary scene"*, *"Fellegi-Sunter 94% probabilistic identity match"*). Added automatic edge highlighting and node focus controls.
+
 ---
 
 ## 5. Issues & Technical Problems Faced and Implemented Solutions

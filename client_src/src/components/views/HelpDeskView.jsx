@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Shield, PhoneCall, MapPin, FileText, HelpCircle, Send, CheckCircle2, AlertTriangle, ExternalLink } from 'lucide-react';
+import { Shield, PhoneCall, MapPin, FileText, HelpCircle, Send, CheckCircle2, AlertTriangle, ExternalLink, RefreshCw } from 'lucide-react';
 import { WorkPanel } from '../ui/Layout.jsx';
 import { Button } from '../ui/Controls.jsx';
+import { api } from '../../api/client.js';
 
 const HELPLINES = [
   { title: 'Emergency Response Support', number: '112', desc: '24/7 Police Emergency Hotline (Toll-Free)', tone: 'border-red-500/30 text-red-400 bg-red-500/10' },
@@ -19,31 +20,46 @@ const COMPLAINT_STEPS = [
 
 export default function HelpDeskView() {
   const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
     { sender: 'bot', text: 'Namaskara! Welcome to Karnataka State Police Citizen Support. How can we assist you today?' }
   ]);
 
-  function handleAsk(e) {
+  async function handleAsk(e) {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim() || loading) return;
 
     const userMsg = query;
     setMessages((prev) => [...prev, { sender: 'user', text: userMsg }]);
     setQuery('');
+    setLoading(true);
 
-    setTimeout(() => {
-      let reply = 'For emergency assistance, please call 112 immediately. For e-complaints, visit your nearest police station with valid photo ID.';
-      const lower = userMsg.toLowerCase();
-      if (lower.includes('fir') || lower.includes('copy')) {
-        reply = 'Under Section 154 CrPC, you can receive a free copy of your FIR at the police station immediately upon registration.';
-      } else if (lower.includes('cyber') || lower.includes('fraud') || lower.includes('money')) {
-        reply = 'For cyber fraud or unauthorized bank transactions, call 1930 immediately within the golden hour to freeze fraudulent transfers.';
-      } else if (lower.includes('station') || lower.includes('bengaluru')) {
-        reply = 'Bengaluru Central PS is located on Infantry Road. Mysuru Main PS is located near Suburban Bus Stand.';
+    try {
+      const res = await api.ragQuery(`Citizen Assistance Inquiry: ${userMsg}`);
+      setLoading(false);
+      let reply = '';
+      if (res.ok && res.data) {
+        reply = res.data.answer || res.data.response || res.data.rag_summary;
+      }
+      
+      if (!reply) {
+        const lower = userMsg.toLowerCase();
+        if (lower.includes('fir') || lower.includes('copy')) {
+          reply = 'Under Section 154 CrPC, you can receive a free copy of your FIR at the police station immediately upon registration.';
+        } else if (lower.includes('cyber') || lower.includes('fraud') || lower.includes('money')) {
+          reply = 'For cyber fraud or unauthorized bank transactions, call 1930 immediately within the golden hour to freeze fraudulent transfers.';
+        } else if (lower.includes('station') || lower.includes('bengaluru')) {
+          reply = 'Bengaluru Central PS is located on Infantry Road. Mysuru Main PS is located near Suburban Bus Stand.';
+        } else {
+          reply = 'For emergency assistance, please call 112 immediately. For e-complaints, visit your nearest police station with valid photo ID.';
+        }
       }
 
       setMessages((prev) => [...prev, { sender: 'bot', text: reply }]);
-    }, 400);
+    } catch (err) {
+      setLoading(false);
+      setMessages((prev) => [...prev, { sender: 'bot', text: 'For emergency assistance, please call 112 immediately. For e-complaints, visit your nearest police station with valid photo ID.' }]);
+    }
   }
 
   return (

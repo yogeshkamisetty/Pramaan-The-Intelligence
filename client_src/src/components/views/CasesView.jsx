@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { cases } from '../../data/mock.js';
+import { cases, caseImages } from '../../data/mock.js';
 import { WorkPanel } from '../common/WorkPanel.jsx';
 import { Cite } from '../common/Cite.jsx';
 import { ModeBadge } from '../common/ModeBadge.jsx';
 import { CaseDetailView } from '../cases/CaseDetailView.jsx';
-import { Search, Filter, FileText, Download, CopyCheck, MapPin, Clock, X, ChevronRight } from 'lucide-react';
+import { Search, Filter, FileText, Download, CopyCheck, MapPin, Clock, X, ChevronRight, Image as ImageIcon } from 'lucide-react';
 
 export default function CasesView({ activeRole = 'ACP' }) {
   const [filterStatus, setFilterStatus] = useState('all');
@@ -168,6 +168,15 @@ export default function CasesView({ activeRole = 'ACP' }) {
                 {/* Tab Content Rendering */}
                 {activeTab === 'Overview' && (
                   <div className="space-y-3 text-xs">
+                    {caseImages[selectedCase.id] && (
+                      <div className="rounded-lg border border-pramaan-border bg-pramaan-elevated overflow-hidden p-2">
+                        <div className="flex items-center gap-1.5 text-[10px] font-mono text-pramaan-secondary mb-1.5 px-1 font-semibold">
+                          <ImageIcon size={12} /> Crime Scene / Location Evidence Media:
+                        </div>
+                        <img src={caseImages[selectedCase.id]} alt="Crime Scene Evidence" className="w-full h-44 object-cover rounded border border-pramaan-border/60" />
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-pramaan-elevated border border-pramaan-border font-mono">
                       <div>
                         <span className="text-pramaan-text-secondary block text-[10px]">FIR NUMBER:</span>

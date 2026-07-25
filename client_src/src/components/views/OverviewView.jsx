@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { activitySeries, cases, alerts } from '../../data/mock.js';
+import { activitySeries, cases, alerts, caseTypeBreakdown, suspectProfiles } from '../../data/mock.js';
 import { WorkPanel } from '../common/WorkPanel.jsx';
 import { Cite } from '../common/Cite.jsx';
 import { ModeBadge } from '../common/ModeBadge.jsx';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { RefreshCw, ShieldCheck, Sliders, AlertTriangle, ChevronRight, Activity, Users, Shield, Layers } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import { RefreshCw, ShieldCheck, Sliders, AlertTriangle, ChevronRight, Activity, Users, Shield, Layers, Image as ImageIcon } from 'lucide-react';
 import { api } from '../../api/client.js';
 import { ExplainabilityTooltip } from '../common/ExplainabilityTooltip.jsx';
 
@@ -25,9 +25,9 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
   const isAggregateOnly = activeRole === 'Analyst' || activeRole === 'Policy';
 
   const findings = [
-    { score: 91, cite: 'FIR-2024-8841', text: 'CANON-0042 identified as highest-priority threat linked to multi-district serial burglaries.' },
-    { score: 84, cite: 'CASE-002', text: 'CASE-002 flagged as 88% twin match to CASE-001 based on MO, timing, and weapon similarity.' },
-    { score: 76, cite: 'CLUS-BLR-CENTRAL', text: 'Bengaluru Central station registered densest property crime cluster in past 7 days.' },
+    { score: 91, cite: 'FIR-2024-8841', text: 'CANON-0042 identified as highest-priority threat linked to multi-district serial burglaries.', img: '/demo/suspect_1.png' },
+    { score: 84, cite: 'CASE-002', text: 'CASE-002 flagged as 88% twin match to CASE-001 based on MO, timing, and weapon similarity.', img: '/demo/crime_scene.svg' },
+    { score: 76, cite: 'CLUS-BLR-CENTRAL', text: 'Bengaluru Central station registered densest property crime cluster in past 7 days.', img: '/demo/command_center.svg' },
   ];
 
   const fetchPriority = async () => {
@@ -128,41 +128,74 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
       <div className="grid gap-5 xl:grid-cols-3">
         {/* Left 2 Cols: Priority Watchlist & Trends */}
         <div className="space-y-5 xl:col-span-2">
-          {/* Activity Trend Chart */}
-          <WorkPanel eyebrow="Incident Load" title="7-Day Crime Incident Trend">
-            <div className="h-60 mt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={activitySeries}>
-                  <defs>
-                    <linearGradient id="alertValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#38BDF8" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2A3346" />
-                  <XAxis dataKey="time" stroke="#8A97AD" fontSize={11} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#8A97AD" fontSize={11} tickLine={false} axisLine={false} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#121722', borderColor: '#2A3346', borderRadius: '8px' }}
-                    itemStyle={{ color: '#EAF0FA' }}
-                  />
-                  <Area type="monotone" dataKey="value" stroke="#38BDF8" strokeWidth={2} fillOpacity={1} fill="url(#alertValue)" />
-                </AreaChart>
-              </ResponsiveContainer>
+          {/* Activity Trend & Breakdown */}
+          <div className="grid gap-5 md:grid-cols-3">
+            <div className="md:col-span-2">
+              <WorkPanel eyebrow="Incident Load" title="7-Day Crime Incident Trend">
+                <div className="h-56 mt-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={activitySeries}>
+                      <defs>
+                        <linearGradient id="alertValue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#38BDF8" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#2A3346" />
+                      <XAxis dataKey="time" stroke="#8A97AD" fontSize={11} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#8A97AD" fontSize={11} tickLine={false} axisLine={false} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: '#121722', borderColor: '#2A3346', borderRadius: '8px' }}
+                        itemStyle={{ color: '#EAF0FA' }}
+                      />
+                      <Area type="monotone" dataKey="value" stroke="#38BDF8" strokeWidth={2} fillOpacity={1} fill="url(#alertValue)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </WorkPanel>
             </div>
-          </WorkPanel>
 
-          {/* AI Key Findings */}
+            <WorkPanel eyebrow="Crime Mix" title="Crime Category Breakdown">
+              <div className="h-44 mt-1 flex items-center justify-center">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={caseTypeBreakdown} dataKey="count" nameKey="type" cx="50%" cy="50%" innerRadius={30} outerRadius={55} paddingAngle={3}>
+                      {caseTypeBreakdown.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{ backgroundColor: '#121722', borderColor: '#2A3346', borderRadius: '8px', fontSize: '11px' }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="space-y-1 mt-1 text-[10px] font-mono">
+                {caseTypeBreakdown.slice(0, 4).map((c) => (
+                  <div key={c.type} className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-pramaan-text-secondary">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: c.color }} />
+                      {c.type}
+                    </span>
+                    <span className="font-bold text-pramaan-text">{c.count}</span>
+                  </div>
+                ))}
+              </div>
+            </WorkPanel>
+          </div>
+
+          {/* AI Key Findings with Visual Cards */}
           <WorkPanel eyebrow="Automated Intelligence" title="AI Key Findings & Citations">
             <div className="grid gap-3 md:grid-cols-3">
               {findings.map((f) => (
-                <div key={f.cite} className="p-3.5 rounded-lg border border-pramaan-border bg-pramaan-elevated flex flex-col justify-between gap-2">
+                <div key={f.cite} className="p-3.5 rounded-lg border border-pramaan-border bg-pramaan-elevated flex flex-col justify-between gap-2.5">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono font-bold text-pramaan-secondary bg-pramaan-secondary/10 px-1.5 py-0.5 rounded border border-pramaan-secondary/20">
                       Score: {f.score}%
                     </span>
                     <Cite id={f.cite} onClick={onOpenCase} />
                   </div>
+                  {f.img && (
+                    <img src={f.img} alt="Evidence media" className="h-20 w-full object-cover rounded border border-pramaan-border/60" />
+                  )}
                   <p className="text-xs text-pramaan-text leading-relaxed">{f.text}</p>
                 </div>
               ))}

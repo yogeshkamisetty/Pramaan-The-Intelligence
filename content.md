@@ -157,6 +157,13 @@ The Pramaan backend is built as a unified, high-performance containerized **Fast
 * **Dynamic Catalyst SDK Binding**: Moved database and SDK initialization from static startup hooks to request-level middleware, ensuring credentials injected during HTTP calls are preserved.
 * **Local Semantic RAG Pipeline**: Built a fully offline, self-contained RAG summary generator (`rag_summary`) in `intent_router_fn.py`. The local pipeline processes query parameters against retrieved data records and returns rich natural language assessments to the UI without requiring external Gemini API keys.
 
+### Phase 7: AI Assistant Overhaul, Gemini API Wiring, & Visual Media System
+* **Automatic `.env` Discovery**: Implemented module-level `.env` loading in `appsail/utils/llm_client.py`, enabling seamless reading of `GEMINI_API_KEY` across local dev and Catalyst AppSail container deployments. Upgraded Gemini model hierarchy to prioritize `gemini-2.0-flash`.
+* **Conversational AI Assistant Workspace**: Overhauled `AssistantView.jsx` into a full conversational chat interface featuring pre-loaded investigation queries (case twin matching, entity resolution), typing indicators, confidence score badges, pipeline tags, and expandable evidence cards.
+* **Extended AI Request Timeout & API Fallbacks**: Updated `client.js` with a 12-second timeout for AI endpoints (`/rag/query`, `/intent_router_fn/`) and structured fallback payloads (`answer`, `evidence`, `confidence_score`, `pipeline`, `citations`).
+* **Wired Citizen HelpDesk Chatbot**: Connected `HelpDeskView.jsx` directly to `api.ragQuery()` for live Gemini-powered citizen Q&A with fallbacks for emergency hotlines (112, 1930) and CrPC Section 154 guidance.
+* **Visual SVG Media & Data Enrichment**: Added high-resolution SVG visual assets (`ksp_badge.svg`, `crime_scene.svg`, `command_center.svg`), suspect profiles with mugshots, station locations, and case timelines in `mock.js`. Integrated a Crime Category Breakdown pie chart into `OverviewView.jsx` and evidence media previews into `CasesView.jsx`.
+
 ---
 
 ## 5. Issues & Technical Problems Faced and Implemented Solutions

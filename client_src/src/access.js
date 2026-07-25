@@ -43,6 +43,7 @@ export const VIEW_ACCESS = {
   history:    { any: ['own_case_detail'],   label: 'Investigation History' },
   graph:      { any: ['own_case_detail'],   label: 'Entity Graph' },
   facerec:    { any: ['own_case_detail'],   label: 'Face Recognition' },
+  fingerprint:{ any: ['own_case_detail'],   label: 'Fingerprint Match' },
   assistant:  { any: ['own_case_detail'],   label: 'AI Assistant' },
   helpdesk:   { any: AGGREGATE,             label: 'Public Help Desk' },
   docsearch:  { any: ['own_case_detail'],   label: 'Document Search' },

@@ -18,6 +18,8 @@ export const translations = {
     navHistory: "Investigation History",
     navMap: "Live Crime Map",
     navGraph: "Entity Graph",
+    navFaceRec: "Face Recognition",
+    navFingerprint: "Fingerprint Match",
     navAssistant: "AI Assistant",
     navAudit: "Audit & Compliance",
     navHelpDesk: "Public Help Desk",

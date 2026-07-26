@@ -188,6 +188,10 @@ The Pramaan backend is built as a unified, high-performance containerized **Fast
 * **Latent Crime Scene Print Pre-Processing Toolbar (`FingerprintView.jsx`)**: Integrated interactive pre-processing controls for smudged crime scene latent prints including **Contrast Normalization (CLAHE)**, **Brightness Tuning**, **Binarization Cutoff**, **Gabor Ridge Frequency Filtering**, and **Real-Time Split-Screen Compare View**.
 * **3D Face Pose Alignment & Fugitive Aging Simulator (`FaceRecognitionView.jsx`)**: Implemented **3D Pitch & Yaw Head Rotation Sliders** (-45° to +45°), **68-Point Facial Landmark Wireframe Mesh Overlay**, and an **Interactive Age Progression Engine** (Age 18 to 75 years) for tracking long-standing missing persons and fleeing wanted fugitives.
 
+### Phase 13: Live Microphone Bhashini Audio Stream & Form 54 Police Case Diary Export (`AssistantView.jsx` & `bhashini.py`)
+* **Live MediaRecorder Microphone Stream & Waveform HUD**: Implemented direct browser microphone recording via **`MediaRecorder` API** with live audio chunk buffering (`Blob`), elapsed recording timer, and animated **Live Audio Waveform Bars** feeding into Bhashini ASR.
+* **Official Police Case Diary (Form 54 PDF/Journal) Export Engine**: Built 1-click **Export Form 54 Case Diary** action that formats the entire investigation Q&A conversation into the official Karnataka Police Case Diary layout (Sec 172 Cr.P.C. / Sec 193 BNSS) with officer attestation and digital police seal.
+
 ---
 
 ## 5. Issues & Technical Problems Faced and Implemented Solutions

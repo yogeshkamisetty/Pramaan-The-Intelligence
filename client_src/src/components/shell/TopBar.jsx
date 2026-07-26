@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Command, Bell, ChevronRight, CircleDot, Globe, Shield, LogOut, Sun, Moon, Check, Trash2, X, AlertTriangle, AlertCircle } from 'lucide-react';
+import { Search, Command, Bell, ChevronRight, CircleDot, Globe, Shield, LogOut, Sun, Moon, Check, Trash2, X, AlertTriangle, AlertCircle, Plus } from 'lucide-react';
 
 const titles = {
   overview: { title: 'Command Overview', sub: 'Watch floor', titleKn: 'ಕಮಾಂಡ್ ಮೇಲ್ನೋಟ' },
@@ -31,7 +31,8 @@ export function TopBar({
   onLogout,
   language,
   onLanguageToggle,
-  onOpenCommandPalette
+  onOpenCommandPalette,
+  onOpenNewCase
 }) {
   const meta = titles[view] || titles.overview;
   const [theme, setTheme] = useState('dark');
@@ -75,21 +76,34 @@ export function TopBar({
         </span>
       </div>
 
-      {/* Omni-search trigger button */}
-      <div
-        onClick={onOpenCommandPalette}
-        className="order-3 flex w-full max-w-md items-center gap-2 rounded-lg border border-pramaan-border bg-pramaan-surface px-3 py-1.5 cursor-pointer hover:border-pramaan-secondary/40 transition-colors md:order-none"
-      >
-        <Search className="w-4 h-4 text-pramaan-text-secondary shrink-0" />
-        <span className="flex-1 text-xs text-pramaan-text-secondary font-sans truncate">
-          {language === 'KN'
-            ? 'ಹುಡುಕಿ ಪ್ರಕರಣಗಳು, ಅಪರಾಧಿಗಳು (⌘K)...'
-            : 'Search cases, suspects, or jump to view (⌘K)...'}
-        </span>
-        <span className="hidden items-center gap-1 rounded bg-pramaan-elevated border border-pramaan-border px-1.5 py-0.5 text-[10px] font-mono text-pramaan-text-secondary sm:flex">
-          <Command size={10} /> K
-        </span>
+      {/* Omni-search trigger & New Case Action */}
+      <div className="flex items-center gap-2 order-3 w-full max-w-lg md:order-none">
+        <div
+          onClick={onOpenCommandPalette}
+          className="flex flex-1 items-center gap-2 rounded-lg border border-pramaan-border bg-pramaan-surface px-3 py-1.5 cursor-pointer hover:border-pramaan-secondary/40 transition-colors"
+        >
+          <Search className="w-4 h-4 text-pramaan-text-secondary shrink-0" />
+          <span className="flex-1 text-xs text-pramaan-text-secondary font-sans truncate">
+            {language === 'KN'
+              ? 'ಹುಡುಕಿ ಪ್ರಕರಣಗಳು, ಅಪರಾಧಿಗಳು (⌘K)...'
+              : 'Search cases, suspects, or jump to view (⌘K)...'}
+          </span>
+          <span className="hidden items-center gap-1 rounded bg-pramaan-elevated border border-pramaan-border px-1.5 py-0.5 text-[10px] font-mono text-pramaan-text-secondary sm:flex">
+            <Command size={10} /> K
+          </span>
+        </div>
+
+        {/* Global New Case Button */}
+        <button
+          onClick={onOpenNewCase}
+          className="px-3 py-1.5 bg-pramaan-primary hover:bg-pramaan-primary-cyan text-black font-bold text-xs rounded-lg flex items-center gap-1.5 transition-all cursor-pointer shadow-md shadow-pramaan-primary/20 shrink-0"
+          title="Register New FIR / Case File"
+        >
+          <Plus size={15} />
+          <span className="hidden sm:inline font-mono uppercase text-[11px]">New Case</span>
+        </button>
       </div>
+
 
       {/* Control Actions */}
       <div className="ml-auto flex items-center gap-2 relative">

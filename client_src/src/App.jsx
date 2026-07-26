@@ -20,6 +20,7 @@ import AuditView from './components/views/AuditView';
 import HelpDeskView from './components/views/HelpDeskView';
 import { RestrictedView } from './components/common/RestrictedView';
 import { CommandPalette } from './components/common/CommandPalette';
+import { NewCaseRegistration } from './components/cases/NewCaseRegistration';
 import { canAccessView, firstAllowedView } from './access';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
   });
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
+  const [isNewCaseOpen, setIsNewCaseOpen] = useState(false);
   const [language, setLanguage] = useState('EN');
   const [userProfile, setUserProfile] = useState({
     role: 'ACP',
@@ -99,6 +101,15 @@ export default function App() {
         activeRole={activeRole}
       />
 
+      <NewCaseRegistration
+        isOpen={isNewCaseOpen}
+        onClose={() => setIsNewCaseOpen(false)}
+        onCaseRegistered={(newCase) => {
+          setIsNewCaseOpen(false);
+          setView('cases');
+        }}
+      />
+
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <Sidebar active={view} onChange={setView} activeRole={activeRole} language={language} />
         <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
@@ -111,6 +122,7 @@ export default function App() {
             language={language}
             onLanguageToggle={toggleLanguage}
             onOpenCommandPalette={() => setShowCommandPalette(true)}
+            onOpenNewCase={() => setIsNewCaseOpen(true)}
           />
           <div className="min-h-0 flex-1 overflow-auto p-3 sm:p-4 lg:p-5">
             {!viewAllowed && (
@@ -147,3 +159,4 @@ export default function App() {
     </div>
   );
 }
+

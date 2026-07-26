@@ -71,6 +71,12 @@
   --pramaan-text-secondary: #8A97AD;
 }
 
+/* Explicit Override for dark:text-black requested by user to ensure #f9f9f9 bright text */
+.dark .dark\:text-black,
+:is(.dark *) .dark\:text-black {
+  color: #f9f9f9 !important;
+}
+
 /* Dynamic CSS Variable Utilities for Both Light & Dark Themes */
 .bg-pramaan-bg { background-color: var(--pramaan-bg); }
 .bg-pramaan-surface { background-color: var(--pramaan-surface); }

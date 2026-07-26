@@ -98,23 +98,23 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
                     key={`${item.key}-${itemIdx}`}
                     onClick={() => onChange(item.key)}
                     title={collapsed ? displayLabel : undefined}
-                    className={`group relative flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left transition-all cursor-pointer active:scale-[0.98] ${
+                    className={`group relative flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-left transition-all cursor-pointer active:scale-[0.98] ${
                       isActive
-                        ? 'bg-pramaan-primary text-black dark:text-black font-black shadow-lg scale-[1.02] border border-pramaan-primary/50'
+                        ? 'bg-pramaan-elevated text-[#f9f9f9] dark:text-[#f9f9f9] font-extrabold border-2 border-white/80 dark:border-white/90 shadow-lg scale-[1.01]'
                         : isAllowed
-                        ? 'text-pramaan-text hover:bg-pramaan-elevated hover:text-pramaan-primary font-semibold'
-                        : 'text-pramaan-text-secondary/40 hover:bg-pramaan-elevated/40'
+                        ? 'text-pramaan-text hover:bg-pramaan-elevated hover:text-pramaan-primary font-semibold border border-transparent'
+                        : 'text-pramaan-text-secondary/40 hover:bg-pramaan-elevated/40 border border-transparent'
                     }`}
                   >
-                    {/* Active Left Glow Bar */}
+                    {/* Active Left Pill Accent */}
                     {isActive && (
-                      <span className="absolute inset-y-1.5 left-0 w-1.5 rounded-r-full bg-black dark:bg-black shadow-md" />
+                      <span className="absolute inset-y-2 left-0 w-1.5 rounded-r-full bg-[#f9f9f9] shadow-sm" />
                     )}
 
-                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className={`shrink-0 ${isActive ? 'text-black dark:text-black' : 'text-pramaan-primary'}`} />
+                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className={`shrink-0 ${isActive ? 'text-[#f9f9f9]' : 'text-pramaan-primary'}`} />
                     
                     {!collapsed && (
-                      <span className="truncate text-xs font-bold flex-1">{displayLabel}</span>
+                      <span className="truncate text-xs font-extrabold flex-1 text-[#f9f9f9]">{displayLabel}</span>
                     )}
 
                     {!isAllowed && !collapsed && (
@@ -125,7 +125,7 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
                     {item.badge && !collapsed && isAllowed && (
                       <span className={`ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-mono font-bold shadow-xs ${
                         isActive 
-                          ? 'bg-black text-white dark:bg-black dark:text-white' 
+                          ? 'bg-[#f9f9f9] text-black font-extrabold' 
                           : 'bg-pramaan-primary/20 text-pramaan-primary border border-pramaan-primary/40'
                       }`}>
                         {item.badge}

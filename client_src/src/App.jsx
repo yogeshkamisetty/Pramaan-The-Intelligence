@@ -18,6 +18,7 @@ import DocumentSearchView from './components/views/DocumentSearchView';
 import UploadDocumentsView from './components/views/UploadDocumentsView';
 import AuditView from './components/views/AuditView';
 import HelpDeskView from './components/views/HelpDeskView';
+import SocioDemographicView from './components/views/SocioDemographicView';
 import { RestrictedView } from './components/common/RestrictedView';
 import { CommandPalette } from './components/common/CommandPalette';
 import { NewCaseRegistration } from './components/cases/NewCaseRegistration';
@@ -149,6 +150,7 @@ export default function App() {
                 {view === 'docsearch' && <DocumentSearchView activeRole={activeRole} />}
                 {view === 'docupload' && <UploadDocumentsView activeRole={activeRole} />}
                 {view === 'audit' && <AuditView activeRole={activeRole} />}
+                {view === 'sociodemographic' && <SocioDemographicView activeRole={activeRole} />}
                 {view === 'helpdesk' && <HelpDeskView activeRole={activeRole} />}
               </>
             )}

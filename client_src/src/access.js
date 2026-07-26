@@ -48,6 +48,7 @@ export const VIEW_ACCESS = {
   helpdesk:   { any: AGGREGATE,             label: 'Public Help Desk' },
   docsearch:  { any: ['own_case_detail'],   label: 'Document Search' },
   docupload:  { any: ['own_case_detail'],   label: 'Upload Documents' },
+  sociodemographic: { any: AGGREGATE,       label: 'Socio-Demographics & Forecasts' },
 };
 
 export function permissionsFor(role) {

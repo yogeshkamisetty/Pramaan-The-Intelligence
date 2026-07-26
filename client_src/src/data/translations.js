@@ -22,6 +22,7 @@ export const translations = {
     navFingerprint: "Fingerprint Match",
     navAssistant: "AI Assistant",
     navAudit: "Audit & Compliance",
+    navSocioDemographic: "Socio-Demographics & Forecasts",
     navHelpDesk: "Public Help Desk",
 
     // Search Controls

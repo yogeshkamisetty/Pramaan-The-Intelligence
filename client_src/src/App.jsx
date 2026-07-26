@@ -35,6 +35,7 @@ export default function App() {
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [isNewCaseOpen, setIsNewCaseOpen] = useState(false);
   const [language, setLanguage] = useState('EN');
+  const [theme, setTheme] = useState(() => localStorage.getItem('pramaan_theme') || 'dark');
   const [userProfile, setUserProfile] = useState({
     role: 'ACP',
     title: 'Assistant Commissioner (ACP)',
@@ -42,6 +43,19 @@ export default function App() {
     station: 'KSP Command HQ',
     clearance: 'Level 5 - Full Command'
   });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('pramaan_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const handleRoleChange = (newRole) => {
     setActiveRole(newRole);
@@ -122,6 +136,8 @@ export default function App() {
             onLogout={handleLogout}
             language={language}
             onLanguageToggle={toggleLanguage}
+            theme={theme}
+            onThemeToggle={toggleTheme}
             onOpenCommandPalette={() => setShowCommandPalette(true)}
             onOpenNewCase={() => setIsNewCaseOpen(true)}
           />

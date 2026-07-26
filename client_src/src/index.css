@@ -3,31 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme {
-  --color-pramaan-bg: #0B0E14;
-  --color-pramaan-surface: #121722;
-  --color-pramaan-elevated: #161C2A;
-  --color-pramaan-panel: #1E2638;
-  --color-pramaan-border: #263044;
-  --color-pramaan-border-strong: #38BDF8;
-  --color-pramaan-primary: #38BDF8;
-  --color-pramaan-primary-cyan: #22D3EE;
-  --color-pramaan-gold: #F59E0B;
-  --color-pramaan-teal: #22D3EE;
-  --color-pramaan-secondary: #8A97AD;
-  --color-pramaan-signal: #38BDF8;
-  --color-pramaan-success: #10B981;
-  --color-pramaan-warning: #F59E0B;
-  --color-pramaan-critical: #EF4444;
-  --color-pramaan-info: #A78BFA;
-  --color-pramaan-text: #EAF0FA;
-  --color-pramaan-text-secondary: #8A97AD;
-}
-
 :root {
   --font-size: 13px;
 
-  /* Dark-First "Midnight Command" Palette (#0B0E14, #121722, #161C2A, #38BDF8, #EAF0FA) */
+  /* Default Dark "Midnight Command" Palette */
   --pramaan-bg: #0B0E14;
   --pramaan-surface: #121722;
   --pramaan-elevated: #161C2A;
@@ -46,49 +25,69 @@
   --pramaan-info: #A78BFA;
   --pramaan-text: #EAF0FA;
   --pramaan-text-secondary: #8A97AD;
-
-  --background: #0B0E14;
-  --foreground: #EAF0FA;
-  --card: #121722;
-  --card-foreground: #EAF0FA;
-  --popover: #121722;
-  --popover-foreground: #EAF0FA;
-  --primary: #38BDF8;
-  --primary-foreground: #0B0E14;
-  --secondary: #22D3EE;
-  --secondary-foreground: #0B0E14;
-  --muted: #161C2A;
-  --muted-foreground: #8A97AD;
-  --accent: #38BDF8;
-  --accent-foreground: #0B0E14;
-  --border: #263044;
-  --input: #263044;
-  --input-background: #121722;
-  --radius: 0.75rem;
-  --sidebar: #0B0E14;
-  --sidebar-foreground: #EAF0FA;
-  --sidebar-primary: #38BDF8;
-  --sidebar-primary-foreground: #0B0E14;
-  --sidebar-accent: #161C2A;
-  --sidebar-accent-foreground: #EAF0FA;
 }
 
-/* Explicit Non-Transparent Solid Utility Classes for Modals, Dropdowns & Popups */
-.bg-pramaan-bg { background-color: #0B0E14 !important; }
-.bg-pramaan-surface { background-color: #121722 !important; }
-.bg-pramaan-elevated { background-color: #161C2A !important; }
-.bg-pramaan-panel { background-color: #1E2638 !important; }
-.border-pramaan-border { border-color: #263044 !important; }
-.text-pramaan-text { color: #EAF0FA !important; }
-.text-pramaan-text-secondary { color: #8A97AD !important; }
+/* Light Theme Variables */
+:root:not(.dark) {
+  --pramaan-bg: #F0F4F8;
+  --pramaan-surface: #FFFFFF;
+  --pramaan-elevated: #F8FAFC;
+  --pramaan-panel: #E2E8F0;
+  --pramaan-border: #CBD5E1;
+  --pramaan-border-strong: #0284C7;
+  --pramaan-primary: #0284C7;
+  --pramaan-primary-cyan: #0EA5E9;
+  --pramaan-gold: #D97706;
+  --pramaan-teal: #0D9488;
+  --pramaan-secondary: #475569;
+  --pramaan-signal: #0284C7;
+  --pramaan-success: #059669;
+  --pramaan-warning: #D97706;
+  --pramaan-critical: #DC2626;
+  --pramaan-info: #7C3AED;
+  --pramaan-text: #0F172A;
+  --pramaan-text-secondary: #475569;
+}
+
+/* Dark Theme Variables */
+.dark {
+  --pramaan-bg: #0B0E14;
+  --pramaan-surface: #121722;
+  --pramaan-elevated: #161C2A;
+  --pramaan-panel: #1E2638;
+  --pramaan-border: #263044;
+  --pramaan-border-strong: #38BDF8;
+  --pramaan-primary: #38BDF8;
+  --pramaan-primary-cyan: #22D3EE;
+  --pramaan-gold: #F59E0B;
+  --pramaan-teal: #22D3EE;
+  --pramaan-secondary: #8A97AD;
+  --pramaan-signal: #38BDF8;
+  --pramaan-success: #10B981;
+  --pramaan-warning: #F59E0B;
+  --pramaan-critical: #EF4444;
+  --pramaan-info: #A78BFA;
+  --pramaan-text: #EAF0FA;
+  --pramaan-text-secondary: #8A97AD;
+}
+
+/* Dynamic CSS Variable Utilities for Both Light & Dark Themes */
+.bg-pramaan-bg { background-color: var(--pramaan-bg); }
+.bg-pramaan-surface { background-color: var(--pramaan-surface); }
+.bg-pramaan-elevated { background-color: var(--pramaan-elevated); }
+.bg-pramaan-panel { background-color: var(--pramaan-panel); }
+.border-pramaan-border { border-color: var(--pramaan-border); }
+.text-pramaan-text { color: var(--pramaan-text); }
+.text-pramaan-text-secondary { color: var(--pramaan-text-secondary); }
 
 body {
-  background-color: #0B0E14;
-  color: #EAF0FA;
+  background-color: var(--pramaan-bg);
+  color: var(--pramaan-text);
   font-family: 'Inter', 'Noto Sans Kannada', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: var(--font-size);
   line-height: 1.5;
   letter-spacing: -0.01em;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Tabular Figures for Numbers & IDs */
@@ -116,12 +115,12 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B0E14;
+  background: var(--pramaan-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #263044;
+  background: var(--pramaan-border);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #38BDF8;
+  background: var(--pramaan-primary);
 }

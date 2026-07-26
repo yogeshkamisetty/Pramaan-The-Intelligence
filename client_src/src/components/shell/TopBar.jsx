@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Command, Bell, ChevronRight, Globe, Shield, LogOut, Check, Trash2, X, Plus } from 'lucide-react';
+import { Search, Command, Bell, ChevronRight, Globe, Shield, LogOut, Check, Trash2, X, Plus, Sparkles, Sun, Moon } from 'lucide-react';
 
 const titles = {
   overview: { title: 'Command Overview', sub: 'WATCH FLOOR', titleKn: 'ಕಮಾಂಡ್ ಮೇಲ್ನೋಟ' },
@@ -36,12 +36,15 @@ export function TopBar({
   onLogout,
   language = 'EN',
   onLanguageToggle,
+  theme = 'dark',
+  onThemeToggle,
   onOpenCommandPalette,
   onOpenNewCase
 }) {
   const meta = titles[view] || { title: view, sub: 'ANALYZE', titleKn: view };
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+  const [searchMode, setSearchMode] = useState('search');
 
   const displayTitle = language === 'KN' ? meta.titleKn : meta.title;
   const unreadCount = notifications.filter((n) => n.unread).length;
@@ -55,64 +58,89 @@ export function TopBar({
   };
 
   return (
-    <header className="flex min-h-[60px] shrink-0 flex-wrap items-center justify-between gap-3 border-b border-pramaan-border bg-pramaan-surface px-5 py-2.5 relative z-40 text-pramaan-text select-none shadow-md font-sans">
+    <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-pramaan-border bg-pramaan-surface px-5 relative z-40 text-pramaan-text select-none shadow-md font-sans transition-colors duration-200">
       
       {/* Left Breadcrumbs & LIVE ENGINE Badge */}
-      <div className="flex min-w-0 items-center gap-2.5">
-        <span className="text-pramaan-primary uppercase text-[10px] font-mono font-extrabold tracking-widest">
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="text-pramaan-text-secondary uppercase text-[10px] font-mono font-bold tracking-wider">
           {meta.sub}
         </span>
-        <ChevronRight size={14} className="text-pramaan-text-secondary/50" />
-        <span className="truncate text-pramaan-text font-black text-sm sm:text-base tracking-tight">
+        <ChevronRight size={13} className="text-pramaan-text-secondary/50 shrink-0" />
+        <span className="truncate text-pramaan-text font-bold text-sm sm:text-base tracking-tight">
           {displayTitle}
         </span>
         
         {/* LIVE ENGINE Pill Badge */}
-        <span className="ml-2 hidden sm:flex items-center gap-1.5 text-pramaan-primary text-[10px] font-mono font-bold bg-pramaan-primary/15 px-3 py-1 rounded-full border border-pramaan-primary/40 shadow-xs">
-          <span className="w-2 h-2 rounded-full bg-pramaan-primary animate-pulse" /> LIVE ENGINE
+        <span className="ml-2 hidden sm:flex items-center gap-1.5 text-pramaan-primary text-[10px] font-mono font-bold bg-pramaan-primary/10 px-2.5 py-0.5 rounded-full border border-pramaan-primary/30 shadow-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-pramaan-primary animate-pulse" /> LIVE
         </span>
       </div>
 
-      {/* Center Search Input Bar & Global New Case Button */}
-      <div className="order-3 flex w-full max-w-sm sm:max-w-lg items-center gap-2.5 md:order-none">
-        <div
-          onClick={onOpenCommandPalette}
-          className="flex flex-1 items-center gap-2.5 rounded-2xl border border-pramaan-border bg-pramaan-elevated px-4 py-2 cursor-pointer hover:border-pramaan-primary transition-all shadow-xs active:scale-[0.99]"
-        >
-          <Search className="w-4 h-4 text-pramaan-primary shrink-0" />
-          <span className="flex-1 text-xs text-pramaan-text-secondary font-sans truncate font-semibold">
-            {language === 'KN'
-              ? 'ಹುಡುಕಿ ಪ್ರಕರಣಗಳು, ಅಪರಾಧಿಗಳು (⌘K)...'
-              : 'Search cases, suspects, or jump to view (⌘K)...'}
+      {/* Center Search Input Bar & Mode Toggle */}
+      <div className="hidden md:flex flex-1 max-w-lg items-center gap-2 rounded-xl border border-pramaan-border bg-pramaan-elevated px-2 py-1 shadow-xs hover:border-pramaan-primary/60 transition-all">
+        <div className="flex rounded-lg bg-pramaan-surface p-0.5 border border-pramaan-border">
+          <button
+            onClick={() => setSearchMode('search')}
+            className={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono font-bold transition-all cursor-pointer ${
+              searchMode === 'search' ? 'bg-pramaan-primary/20 text-pramaan-primary' : 'text-pramaan-text-secondary hover:text-pramaan-text'
+            }`}
+          >
+            <Search size={12} /> Find
+          </button>
+          <button
+            onClick={() => setSearchMode('ask')}
+            className={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono font-bold transition-all cursor-pointer ${
+              searchMode === 'ask' ? 'bg-pramaan-primary/20 text-pramaan-primary' : 'text-pramaan-text-secondary hover:text-pramaan-text'
+            }`}
+          >
+            <Sparkles size={12} /> Ask AI
+          </button>
+        </div>
+
+        <div onClick={onOpenCommandPalette} className="flex flex-1 items-center gap-2 cursor-pointer min-w-0">
+          <span className="flex-1 text-xs text-pramaan-text-secondary font-sans truncate font-medium">
+            {searchMode === 'search'
+              ? (language === 'KN' ? 'ಹುಡುಕಿ ಪ್ರಕರಣಗಳು, ಅಪರಾಧಿಗಳು (⌘K)...' : 'Search cases, suspects, vehicles (⌘K)...')
+              : (language === 'KN' ? 'ಎಐ ಗೆ ಕೇಳಿ: CASE-001 ವಿವರ...' : 'Ask AI: "Who connects CANON-0042 to CASE-001?"')}
           </span>
-          <span className="hidden items-center gap-1 rounded-lg bg-pramaan-surface border border-pramaan-border px-2 py-0.5 text-[10px] font-mono font-bold text-pramaan-text sm:flex">
+          <span className="flex items-center gap-0.5 rounded-md bg-pramaan-surface border border-pramaan-border px-1.5 py-0.5 text-[10px] font-mono font-bold text-pramaan-text-secondary shrink-0">
             <Command size={10} /> K
           </span>
         </div>
+      </div>
 
+      {/* Right Action Controls */}
+      <div className="flex items-center gap-2 shrink-0">
+        
+        {/* Global New Case Button */}
         {onOpenNewCase && (
           <button
             onClick={onOpenNewCase}
-            className="px-3.5 py-2 bg-pramaan-primary hover:bg-pramaan-primary/80 text-black font-extrabold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer shadow-md border border-pramaan-primary/40 shrink-0 font-mono"
+            className="px-3 py-1.5 bg-pramaan-primary hover:opacity-90 text-white dark:text-black font-extrabold text-xs rounded-lg flex items-center gap-1.5 transition-all cursor-pointer shadow-md border border-pramaan-primary/40 font-mono"
             title="Register New FIR / Case File"
           >
-            <Plus size={15} className="text-black" />
+            <Plus size={14} />
             <span className="hidden sm:inline uppercase text-[11px]">New Case</span>
           </button>
         )}
-      </div>
 
-      {/* Right Controls */}
-      <div className="ml-auto flex items-center gap-2 relative">
-        
+        {/* Theme Switcher Toggle (Sun / Moon) */}
+        <button
+          onClick={onThemeToggle}
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-pramaan-border bg-pramaan-elevated text-pramaan-text-secondary hover:text-pramaan-primary hover:border-pramaan-primary transition-all cursor-pointer shadow-xs"
+          title={`Switch Theme (Current: ${theme === 'dark' ? 'Dark Mode' : 'Light Mode'})`}
+        >
+          {theme === 'dark' ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} className="text-indigo-600" />}
+        </button>
+
         {/* Notifications Bell */}
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-pramaan-border bg-pramaan-elevated text-pramaan-text-secondary hover:text-pramaan-text hover:border-pramaan-primary transition-all cursor-pointer shadow-xs"
-            title="Notifications & Alerts"
+            className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-pramaan-border bg-pramaan-elevated text-pramaan-text-secondary hover:text-pramaan-text hover:border-pramaan-primary transition-all cursor-pointer shadow-xs"
+            title="Notifications & Stream Alerts"
           >
-            <Bell size={16} />
+            <Bell size={15} />
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-pramaan-critical text-[10px] font-mono font-bold text-white shadow-xs">
                 {unreadCount}
@@ -120,10 +148,10 @@ export function TopBar({
             )}
           </button>
 
-          {/* Notifications Dropdown (100% Solid Opaque Background) */}
+          {/* Solid Non-Transparent Notifications Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 top-full mt-2 w-84 sm:w-[420px] max-w-[92vw] rounded-2xl border-2 border-[#263044] bg-[#121722] opacity-100 shadow-2xl overflow-hidden z-[9999] font-sans">
-              <div className="border-b border-[#263044] p-3.5 bg-[#161C2A] space-y-2">
+            <div className="absolute right-0 top-full mt-2 w-84 sm:w-[400px] max-w-[92vw] rounded-2xl border-2 border-pramaan-border bg-pramaan-surface shadow-2xl overflow-hidden z-[9999] font-sans">
+              <div className="border-b border-pramaan-border p-3.5 bg-pramaan-elevated space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pramaan-primary/20 text-pramaan-primary">
@@ -204,22 +232,22 @@ export function TopBar({
           )}
         </div>
 
-        {/* Bilingual Language Switcher */}
+        {/* Language Switcher Button */}
         <button
           onClick={onLanguageToggle}
-          className="flex h-9 items-center gap-1.5 rounded-xl border border-pramaan-border bg-pramaan-elevated px-3 text-xs font-bold text-pramaan-text hover:border-pramaan-primary transition-all cursor-pointer shadow-xs"
+          className="flex h-8 items-center gap-1 rounded-lg border border-pramaan-border bg-pramaan-elevated px-2.5 text-xs font-bold text-pramaan-text hover:border-pramaan-primary transition-all cursor-pointer shadow-xs font-mono"
           title="Switch Language (English / ಕನ್ನಡ)"
         >
-          <Globe size={14} className="text-pramaan-primary" />
+          <Globe size={13} className="text-pramaan-primary" />
           <span>{language === 'KN' ? 'ಕನ್ನಡ' : 'EN'}</span>
         </button>
 
-        {/* Role & Login Selector */}
-        <div className="flex items-center gap-1 rounded-xl border border-pramaan-border bg-pramaan-elevated p-1">
+        {/* Role Clearance Dropdown */}
+        <div className="flex items-center gap-1 rounded-lg border border-pramaan-border bg-pramaan-elevated p-1">
           <select
             value={activeRole}
             onChange={(e) => onRoleChange(e.target.value)}
-            className="h-7 rounded-lg bg-transparent px-2 text-xs font-mono font-bold text-pramaan-primary outline-none cursor-pointer"
+            className="h-6 rounded-md bg-pramaan-surface px-1.5 text-xs font-mono font-bold text-pramaan-primary outline-none cursor-pointer border border-pramaan-border"
             title="Switch Clearance Role"
           >
             {roles.map((r) => (
@@ -231,20 +259,20 @@ export function TopBar({
 
           <button
             onClick={onOpenLoginModal}
-            className="flex h-7 items-center gap-1.5 rounded-lg bg-pramaan-primary px-2.5 text-[11px] font-bold text-black hover:bg-pramaan-primary/80 transition-all cursor-pointer font-mono"
+            className="flex h-6 items-center gap-1 rounded-md bg-pramaan-primary px-2 text-[10px] font-bold text-white dark:text-black hover:opacity-90 transition-all cursor-pointer font-mono"
             title="Open Security Login Portal"
           >
-            <Shield size={13} />
+            <Shield size={12} />
             <span className="hidden sm:inline">Role Access</span>
           </button>
 
           {onLogout && (
             <button
               onClick={onLogout}
-              className="flex h-7 items-center gap-1.5 rounded-lg bg-pramaan-critical/15 px-2 text-[11px] font-bold text-pramaan-critical hover:bg-pramaan-critical hover:text-white transition-all cursor-pointer"
+              className="flex h-6 items-center gap-1 rounded-md bg-pramaan-critical/15 px-1.5 text-[10px] font-bold text-pramaan-critical hover:bg-pramaan-critical hover:text-white transition-all cursor-pointer"
               title="Lock System & Sign Out"
             >
-              <LogOut size={13} />
+              <LogOut size={12} />
               <span className="hidden sm:inline">Lock</span>
             </button>
           )}

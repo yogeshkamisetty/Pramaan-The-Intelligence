@@ -3,7 +3,7 @@ import {
   LayoutDashboard, FolderKanban, BellRing, Share2,
   MapPinned, Fingerprint, CopyCheck, ScrollText,
   ShieldCheck, Sparkles, Lock, HelpCircle,
-  FileSearch, FileUp, ScanFace, Shield, BarChart3
+  FileSearch, FileUp, ScanFace, Shield, BarChart3, ChevronsLeft
 } from 'lucide-react';
 import { canAccessView, ROLE_LABELS, requiredPermissionFor } from '../../access';
 import { translations } from '../../data/translations';
@@ -48,25 +48,33 @@ const groupsConfig = [
 
 export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' }) {
   const [collapsed, setCollapsed] = useState(false);
-  const w = collapsed ? 'w-16' : 'w-16 md:w-64';
+  const w = collapsed ? 'w-16' : 'w-64';
   const t = translations[language] || translations.EN;
 
   return (
-    <aside className={`flex h-full self-stretch min-h-full ${w} shrink-0 flex-col bg-pramaan-surface text-pramaan-text border-r border-pramaan-border transition-[width] duration-200 select-none z-20 shadow-xl font-sans`}>
+    <aside className={`flex h-full self-stretch min-h-full ${w} shrink-0 flex-col bg-pramaan-surface text-pramaan-text border-r border-pramaan-border transition-all duration-200 select-none z-30 shadow-xl font-sans`}>
       
       {/* Top Header Branding */}
-      <div className="p-4 sm:p-5 border-b border-pramaan-border bg-pramaan-elevated/60">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-pramaan-primary/15 border border-pramaan-primary/30 text-pramaan-primary">
-            <ShieldCheck size={22} />
+      <div className="p-4 border-b border-pramaan-border bg-pramaan-elevated flex items-center justify-between">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-pramaan-primary/20 border border-pramaan-primary/50 text-pramaan-primary shrink-0 shadow-xs">
+            <ShieldCheck size={22} strokeWidth={2.2} />
           </div>
           {!collapsed && (
-            <div className="min-w-0 leading-tight hidden md:block">
+            <div className="min-w-0 leading-tight">
               <div className="truncate text-pramaan-text font-black font-mono tracking-wider text-base">PRAMAAN</div>
-              <div className="truncate text-pramaan-text-secondary text-[10px] font-semibold">KSP Crime Intelligence</div>
+              <div className="truncate text-pramaan-primary text-[10px] font-bold">KSP Crime Intelligence</div>
             </div>
           )}
         </div>
+
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="p-1 rounded-lg text-pramaan-text-secondary hover:text-pramaan-primary hover:bg-pramaan-surface transition-all cursor-pointer"
+          title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+        >
+          <ChevronsLeft size={16} className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} />
+        </button>
       </div>
 
       {/* Navigation List */}
@@ -74,7 +82,7 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
         {groupsConfig.map((g, idx) => (
           <div key={`${g.headingKey}-${idx}`} className="space-y-1">
             {!collapsed && (
-              <div className="px-3 text-[10px] font-bold uppercase tracking-widest text-pramaan-primary hidden md:block mb-1.5 font-mono">
+              <div className="px-3 text-[11px] font-extrabold uppercase tracking-widest text-pramaan-primary mb-1.5 font-mono">
                 {t[g.headingKey] || g.headingKey}
               </div>
             )}
@@ -89,25 +97,36 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
                   <button
                     key={`${item.key}-${itemIdx}`}
                     onClick={() => onChange(item.key)}
+                    title={collapsed ? displayLabel : undefined}
                     className={`group relative flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left transition-all cursor-pointer active:scale-[0.98] ${
                       isActive
-                        ? 'bg-pramaan-primary text-black font-extrabold shadow-md scale-[1.01]'
+                        ? 'bg-pramaan-primary text-black dark:text-black font-black shadow-lg scale-[1.02] border border-pramaan-primary/50'
                         : isAllowed
-                        ? 'text-pramaan-text-secondary hover:bg-pramaan-elevated hover:text-pramaan-text font-medium'
+                        ? 'text-pramaan-text hover:bg-pramaan-elevated hover:text-pramaan-primary font-semibold'
                         : 'text-pramaan-text-secondary/40 hover:bg-pramaan-elevated/40'
                     }`}
                   >
-                    <Icon size={17} strokeWidth={isActive ? 2.25 : 1.75} className={`shrink-0 ${isActive ? 'text-black' : 'text-pramaan-text-secondary'}`} />
-                    {!collapsed && <span className="truncate text-xs hidden md:inline">{displayLabel}</span>}
-
-                    {!isAllowed && !collapsed && (
-                      <Lock size={12} className="ml-auto shrink-0 text-pramaan-text-secondary/40 hidden md:block" title={`Requires ${requiredPermissionFor(item.key)}`} />
+                    {/* Active Left Glow Bar */}
+                    {isActive && (
+                      <span className="absolute inset-y-1.5 left-0 w-1.5 rounded-r-full bg-black dark:bg-black shadow-md" />
                     )}
 
-                    {/* Badge Pill */}
+                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className={`shrink-0 ${isActive ? 'text-black dark:text-black' : 'text-pramaan-primary'}`} />
+                    
+                    {!collapsed && (
+                      <span className="truncate text-xs font-bold flex-1">{displayLabel}</span>
+                    )}
+
+                    {!isAllowed && !collapsed && (
+                      <Lock size={12} className="ml-auto shrink-0 text-pramaan-text-secondary/50" title={`Requires ${requiredPermissionFor(item.key)}`} />
+                    )}
+
+                    {/* High-Contrast Badge Pill */}
                     {item.badge && !collapsed && isAllowed && (
-                      <span className={`ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-mono font-bold shadow-xs ${
-                        isActive ? 'bg-black text-white' : 'bg-pramaan-primary/20 text-pramaan-primary'
+                      <span className={`ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-mono font-bold shadow-xs ${
+                        isActive 
+                          ? 'bg-black text-white dark:bg-black dark:text-white' 
+                          : 'bg-pramaan-primary/20 text-pramaan-primary border border-pramaan-primary/40'
                       }`}>
                         {item.badge}
                       </span>
@@ -121,13 +140,13 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
       </nav>
 
       {/* Footer Role Badge Info */}
-      <div className="p-3 border-t border-pramaan-border bg-pramaan-elevated/60 text-xs">
-        <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-pramaan-surface border border-pramaan-border">
-          <Shield size={16} className="text-pramaan-primary shrink-0" />
+      <div className="p-3 border-t border-pramaan-border bg-pramaan-elevated text-xs">
+        <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-pramaan-surface border border-pramaan-border shadow-xs">
+          <Shield size={18} className="text-pramaan-primary shrink-0" />
           {!collapsed && (
-            <div className="min-w-0 flex-1 hidden md:block">
-              <div className="text-[10px] font-mono text-pramaan-primary truncate font-bold uppercase tracking-wide">CLEARANCE LEVEL</div>
-              <div className="text-xs font-extrabold text-pramaan-text truncate">{ROLE_LABELS[activeRole] || activeRole}</div>
+            <div className="min-w-0 flex-1 leading-tight">
+              <div className="text-[10px] font-mono text-pramaan-primary truncate font-extrabold uppercase tracking-wide">CLEARANCE LEVEL</div>
+              <div className="text-xs font-black text-pramaan-text truncate">{ROLE_LABELS[activeRole] || activeRole}</div>
             </div>
           )}
         </div>

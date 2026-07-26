@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { activitySeries, cases, alerts, caseTypeBreakdown } from '../../data/mock.js';
+import { activitySeries, cases, alerts } from '../../data/mock.js';
 import { WorkPanel } from '../common/WorkPanel.jsx';
 import { Cite } from '../common/Cite.jsx';
-import { ModeBadge } from '../common/ModeBadge.jsx';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
-import { RefreshCw, ShieldCheck, Sliders, AlertTriangle, ChevronRight, Activity, Users, Shield, Layers, Image as ImageIcon, Sparkles, FileText, CheckCircle2, Info, ArrowUpRight, TrendingUp } from 'lucide-react';
+import { RefreshCw, ShieldCheck, Sliders, AlertTriangle, Activity, Layers, Sparkles, FileText, CheckCircle2, TrendingUp, Shield } from 'lucide-react';
 import { api } from '../../api/client.js';
 import { ExplainabilityTooltip } from '../common/ExplainabilityTooltip.jsx';
 
@@ -25,13 +24,29 @@ const counters = [
   { label: "ZCQL Stations Live", value: "1,100+", change: "100% Synced", changeColor: "text-teal-500", icon: CheckCircle2 },
 ];
 
+const crimeMixData = [
+  { name: 'Burglary', value: 4, color: '#EF4444' },
+  { name: 'Vehicle theft', value: 2, color: '#F59E0B' },
+  { name: 'Cyber ATM Theft', value: 1, color: '#A855F7' },
+  { name: 'Narcotics Smuggling', value: 1, color: '#10B981' },
+];
+
+const trendData = [
+  { day: 'Mon', alerts: 12 },
+  { day: 'Tue', alerts: 19 },
+  { day: 'Wed', alerts: 15 },
+  { day: 'Thu', alerts: 27 },
+  { day: 'Fri', alerts: 22 },
+  { day: 'Sat', alerts: 18 },
+  { day: 'Sun', alerts: 24 },
+];
+
 const findings = [
   {
     id: "F-01",
     score: 94,
     cite: "FIR-2024-8841",
     text: "CANON-0042 (Mohammed Rafi) identified as primary suspect in 3 window-forced burglaries across Indiranagar & Ashoknagar PS.",
-    img: "/demo_faces/000049.jpg",
     evidence: [
       { id: "MO-992", label: "Modus Operandi", detail: "Rear window crowbar breach, late night 01:30 AM" },
       { id: "ANPR-44", label: "CCTV ANPR", detail: "Vehicle KA-02-MB-1234 flagged at Indiranagar 100ft Rd" }
@@ -42,7 +57,6 @@ const findings = [
     score: 88,
     cite: "CASE-002",
     text: "Hebbal Villa Night Break-in (CASE-002) linked as 89% twin match to Indiranagar Residence Burglary (CASE-001).",
-    img: "/demo_faces/000050.jpg",
     evidence: [
       { id: "VEC-102", label: "Indic RAG", detail: "Vyakyarth Kannada narrative cosine similarity match" }
     ]
@@ -52,7 +66,6 @@ const findings = [
     score: 76,
     cite: "CLUS-BLR-CENTRAL",
     text: "Bengaluru Central station registered densest property crime cluster in past 7 days with high youth unemployment (+0.91).",
-    img: "/demo_faces/000051.jpg",
     evidence: [
       { id: "MULE-88", label: "Financial Mule", detail: "ICICI Account #8819200412 layer transfers detected" }
     ]
@@ -68,15 +81,15 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
       station: 'Indiranagar PS',
       total_score: 94.5,
       breakdown: { recency: 14, severity: 25, centrality: 20, warrant: 35.5 },
-      variables: { prior_cases: 4, co_accused_count: 5, has_active_warrant: true }
+      variables: { prior_cases: 3, co_accused_count: 5, has_active_warrant: true }
     },
     {
       canonical_id: 'CANON-0044',
       name: 'S. Praveen Kumar',
-      station: 'Bengaluru Central PS',
-      total_score: 88.2,
-      breakdown: { recency: 12, severity: 20, centrality: 18, warrant: 38.2 },
-      variables: { prior_cases: 3, co_accused_count: 3, has_active_warrant: true }
+      station: 'Indiranagar PS',
+      total_score: 94.5,
+      breakdown: { recency: 14, severity: 25, centrality: 20, warrant: 35.5 },
+      variables: { prior_cases: 3, co_accused_count: 3, has_active_warrant: false }
     },
     {
       canonical_id: 'CANON-0089',
@@ -131,10 +144,10 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
   return (
     <div className="space-y-4 anim-content font-sans">
       
-      {/* Structured Dashboard Top Section Header */}
+      {/* Top Header Briefing & 6-Card KPI Counter Strip */}
       <div className="rounded-2xl border border-pramaan-border bg-pramaan-surface p-4 sm:p-5 shadow-lg relative overflow-hidden transition-all duration-200">
         
-        {/* Top Briefing Title & Action Controls */}
+        {/* Top Briefing Title Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-pramaan-border pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2.5">
@@ -169,7 +182,7 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
           </div>
         </div>
 
-        {/* Structured 6-Grid KPI Stat Cards */}
+        {/* 6-Grid KPI Stat Cards */}
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {counters.map((c) => {
             const Icon = c.icon;
@@ -199,92 +212,77 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
         </div>
       </div>
 
-      {/* 3-Column Main Watch Floor Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
+      {/* FEATURED 3-PANEL ANALYTICS ROW (INCIDENT LOAD + CRIME MIX + TARGET LEADERBOARD) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         
-        {/* Left Column (5 Cols): AI Key Findings & Evidence Citations */}
-        <div className="xl:col-span-5 space-y-4">
-          <WorkPanel eyebrow="AI ANALYST" title="Key Findings & Evidence Citations">
-            <div className="space-y-3">
-              {findings.map((f) => (
-                <div key={f.id} className="p-3.5 rounded-xl border border-pramaan-border bg-pramaan-surface hover:border-pramaan-primary/50 transition-all shadow-sm space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-bold text-pramaan-primary bg-pramaan-primary/10 px-2 py-0.5 rounded border border-pramaan-primary/30">
-                      {f.id} • Score {f.score}%
-                    </span>
-                    <Cite id={f.cite} onClick={onOpenCase} />
-                  </div>
-
-                  <p className="text-xs text-pramaan-text font-sans leading-relaxed">
-                    {f.text}
-                  </p>
-
-                  <div className="space-y-1 pt-1 border-t border-pramaan-border/50">
-                    {f.evidence.map((e) => (
-                      <div key={e.id} className="text-[10px] font-mono text-pramaan-text-secondary flex items-center gap-1.5">
-                        <span className="text-pramaan-primary font-bold">[{e.id}]</span>
-                        <span className="font-semibold text-pramaan-text">{e.label}:</span>
-                        <span className="truncate">{e.detail}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </WorkPanel>
-        </div>
-
-        {/* Center Column (4 Cols): Priority Triage Queue & Threat Curve */}
-        <div className="xl:col-span-4 space-y-4 flex flex-col justify-between">
-          <WorkPanel eyebrow="TRIAGE QUEUE" title="Priority Case Register">
-            <div className="space-y-2">
-              {cases.slice(0, 5).map((c) => (
-                <div
-                  key={c.id}
-                  onClick={onOpenCase}
-                  className="flex items-center justify-between p-2.5 rounded-lg border border-pramaan-border bg-pramaan-surface hover:bg-pramaan-elevated transition-all cursor-pointer"
-                >
-                  <div className="min-w-0 flex-1 space-y-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${c.priority === 'CRITICAL' ? 'bg-pramaan-critical animate-pulse' : 'bg-pramaan-warning'}`} />
-                      <span className="font-bold text-xs text-pramaan-text truncate">{c.title}</span>
-                    </div>
-                    <div className="text-[10px] font-mono text-pramaan-text-secondary flex items-center gap-2">
-                      <span>{c.id}</span>
-                      <span>•</span>
-                      <span>{c.entities} entities</span>
-                    </div>
-                  </div>
-
-                  <div className="text-right shrink-0">
-                    <span className="text-xs font-mono font-bold text-pramaan-primary">{c.progress}%</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </WorkPanel>
-
-          {/* Threat Curve */}
-          <WorkPanel eyebrow="SIGNAL WAVE" title="7-Day Incident Threat Curve">
-            <div className="h-40 mt-1">
+        {/* Panel 1 (5 Cols): INCIDENT LOAD - 7-Day Crime Incident Trend */}
+        <div className="lg:col-span-5">
+          <WorkPanel eyebrow="INCIDENT LOAD" title="7-Day Crime Incident Trend" className="h-full">
+            <div className="h-56 mt-2">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={activitySeries} margin={{ left: -24, right: 4, top: 4, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--pramaan-border)" />
-                  <XAxis dataKey="day" stroke="var(--pramaan-text-secondary)" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="var(--pramaan-text-secondary)" fontSize={10} tickLine={false} axisLine={false} />
+                <AreaChart data={trendData} margin={{ left: -20, right: 10, top: 10, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="incidentGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--pramaan-primary)" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="var(--pramaan-primary)" stopOpacity={0.0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--pramaan-border)" opacity={0.6} />
+                  <XAxis dataKey="day" stroke="var(--pramaan-text-secondary)" fontSize={11} tickLine={false} axisLine={false} />
+                  <YAxis stroke="var(--pramaan-text-secondary)" fontSize={11} tickLine={false} axisLine={false} domain={[0, 28]} ticks={[0, 7, 14, 21, 28]} />
                   <Tooltip contentStyle={tooltipStyle} />
-                  <Area type="monotone" dataKey="alerts" stroke="var(--pramaan-primary)" strokeWidth={2} fill="var(--pramaan-primary)" fillOpacity={0.15} />
+                  <Area type="monotone" dataKey="alerts" stroke="var(--pramaan-primary)" strokeWidth={3} fill="url(#incidentGrad)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </WorkPanel>
         </div>
 
-        {/* Right Column (3 Cols): Live Alert Stream & Target Watchlist */}
-        <div className="xl:col-span-3 space-y-4">
+        {/* Panel 2 (3 Cols): CRIME MIX - Crime Category Breakdown */}
+        <div className="lg:col-span-3">
+          <WorkPanel eyebrow="CRIME MIX" title="Crime Category Breakdown" className="h-full">
+            <div className="h-40 flex items-center justify-center relative mt-1">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={crimeMixData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={42}
+                    outerRadius={68}
+                    paddingAngle={4}
+                    dataKey="value"
+                  >
+                    {crimeMixData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke="var(--pramaan-surface)" strokeWidth={2} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Crime Category Legend */}
+            <div className="mt-3 space-y-1.5 pt-2 border-t border-pramaan-border/60">
+              {crimeMixData.map((item) => (
+                <div key={item.name} className="flex items-center justify-between text-xs font-sans">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                    <span className="text-pramaan-text font-medium">{item.name}</span>
+                  </div>
+                  <span className="font-mono font-bold text-pramaan-text">{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </WorkPanel>
+        </div>
+
+        {/* Panel 3 (4 Cols): TARGET LEADERBOARD - Priority Watchlist */}
+        <div className="lg:col-span-4">
           <WorkPanel
             eyebrow="TARGET LEADERBOARD"
-            title="Priority Suspect Watchlist"
+            title="Priority Watchlist"
+            className="h-full"
             actions={
               !isAggregateOnly && activeRole === 'ACP' ? (
                 <button
@@ -315,44 +313,113 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
             )}
 
             {isAggregateOnly ? (
-              <div className="p-3 text-center text-xs text-pramaan-text-secondary bg-pramaan-elevated rounded-lg border border-pramaan-border">
-                <Shield className="w-5 h-5 mx-auto mb-1 text-pramaan-warning" />
+              <div className="p-4 text-center text-xs text-pramaan-text-secondary bg-pramaan-elevated rounded-lg border border-pramaan-border">
+                <Shield className="w-6 h-6 mx-auto mb-2 text-pramaan-warning" />
                 Suspect profiles masked for <strong>{activeRole}</strong> clearance.
               </div>
             ) : (
-              <div className="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
+              <div className="space-y-3">
                 {priorityData.map((row, idx) => (
                   <div
                     key={row.canonical_id || idx}
-                    className="p-3 rounded-xl border border-pramaan-border bg-pramaan-surface hover:border-pramaan-primary/50 transition-all shadow-sm space-y-1.5"
+                    className="p-3.5 rounded-2xl border border-pramaan-border bg-pramaan-surface hover:border-pramaan-primary/50 transition-all shadow-sm space-y-2"
                   >
-                    <div className="flex items-start justify-between gap-1.5">
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[9px] font-mono font-bold text-pramaan-primary bg-pramaan-primary/10 px-1 py-0.2 rounded">
-                            #{idx + 1}
-                          </span>
-                          <span className="font-bold text-xs text-pramaan-text">{row.name}</span>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-black text-xs text-pramaan-primary">#{idx + 1}</span>
+                          <span className="font-extrabold text-sm text-pramaan-text">{row.name}</span>
                         </div>
-                        <div className="font-mono text-[10px] text-pramaan-text-secondary">{row.canonical_id} • {row.station}</div>
+                        <div className="font-mono text-[11px] text-pramaan-text-secondary">
+                          {row.canonical_id} • {row.station}
+                        </div>
                       </div>
+                      
                       <ExplainabilityTooltip row={row} weights={weights} />
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-pramaan-border/40">
                       {(row.variables?.has_active_warrant || row.canonical_id === 'CANON-0042') && (
-                        <span className="px-1.5 py-0.2 bg-pramaan-critical/15 text-pramaan-critical border border-pramaan-critical/30 rounded text-[9px] font-mono font-bold flex items-center gap-0.5">
-                          <AlertTriangle size={8} /> WARRANT
+                        <span className="px-2 py-0.5 bg-red-500/15 text-red-500 border border-red-500/30 rounded-md text-[10px] font-mono font-bold flex items-center gap-1">
+                          <AlertTriangle size={10} /> COURT WARRANT
                         </span>
                       )}
-                      <span className="px-1.5 py-0.2 bg-pramaan-elevated text-pramaan-text-secondary rounded text-[9px] font-mono">
-                        {row.variables?.prior_cases || 3} linked cases
+                      <span className="text-[11px] font-mono text-pramaan-text-secondary">
+                        {row.variables?.prior_cases || 3} cases linked
                       </span>
                     </div>
                   </div>
                 ))}
               </div>
             )}
+          </WorkPanel>
+        </div>
+
+      </div>
+
+      {/* WATCH FLOOR INVESTIGATION SECTION (AI FINDINGS & TRIAGE QUEUE) */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
+        
+        {/* Left Column (7 Cols): AI Key Findings & Evidence Citations */}
+        <div className="xl:col-span-7 space-y-4">
+          <WorkPanel eyebrow="AI ANALYST" title="Key Findings & Evidence Citations">
+            <div className="space-y-3">
+              {findings.map((f) => (
+                <div key={f.id} className="p-3.5 rounded-xl border border-pramaan-border bg-pramaan-surface hover:border-pramaan-primary/50 transition-all shadow-sm space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold text-pramaan-primary bg-pramaan-primary/10 px-2 py-0.5 rounded border border-pramaan-primary/30">
+                      {f.id} • Score {f.score}%
+                    </span>
+                    <Cite id={f.cite} onClick={onOpenCase} />
+                  </div>
+
+                  <p className="text-xs text-pramaan-text font-sans leading-relaxed">
+                    {f.text}
+                  </p>
+
+                  <div className="space-y-1 pt-1 border-t border-pramaan-border/50">
+                    {f.evidence.map((e) => (
+                      <div key={e.id} className="text-[10px] font-mono text-pramaan-text-secondary flex items-center gap-1.5">
+                        <span className="text-pramaan-primary font-bold">[{e.id}]</span>
+                        <span className="font-semibold text-pramaan-text">{e.label}:</span>
+                        <span className="truncate">{e.detail}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </WorkPanel>
+        </div>
+
+        {/* Right Column (5 Cols): Triage Case Register Queue */}
+        <div className="xl:col-span-5 space-y-4">
+          <WorkPanel eyebrow="TRIAGE QUEUE" title="Priority Case Register">
+            <div className="space-y-2.5">
+              {cases.slice(0, 5).map((c) => (
+                <div
+                  key={c.id}
+                  onClick={onOpenCase}
+                  className="flex items-center justify-between p-3 rounded-xl border border-pramaan-border bg-pramaan-surface hover:bg-pramaan-elevated transition-all cursor-pointer shadow-xs"
+                >
+                  <div className="min-w-0 flex-1 space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2.5 h-2.5 rounded-full ${c.priority === 'CRITICAL' ? 'bg-pramaan-critical animate-pulse' : 'bg-pramaan-warning'}`} />
+                      <span className="font-bold text-xs text-pramaan-text truncate">{c.title}</span>
+                    </div>
+                    <div className="text-[10px] font-mono text-pramaan-text-secondary flex items-center gap-2">
+                      <span>{c.id}</span>
+                      <span>•</span>
+                      <span>{c.entities} entities</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0 ml-2">
+                    <span className="text-xs font-mono font-bold text-pramaan-primary">{c.progress}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </WorkPanel>
         </div>
 

@@ -79,14 +79,14 @@ export default function App() {
   // MANDATORY LOGIN FIRST: If unauthenticated, show full-screen Login View before accessing data
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0B0E14] font-sans text-pramaan-text flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#DEF2F1] font-sans text-pramaan-text flex items-center justify-center p-4">
         <LoginView onLogin={handleLogin} />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col overflow-hidden bg-pramaan-bg font-sans text-pramaan-text relative">
+    <div className="flex h-screen w-screen overflow-hidden bg-pramaan-bg font-sans text-[#17252A] relative">
       {showLoginModal && <LoginView onLogin={handleLogin} />}
 
       <CommandPalette

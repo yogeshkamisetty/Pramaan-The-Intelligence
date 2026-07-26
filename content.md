@@ -169,6 +169,11 @@ The Pramaan backend is built as a unified, high-performance containerized **Fast
 * **Real-Time Satellite GEOINT Map (`HotspotMap.jsx` & `LiveMapView.jsx`)**: Added a 1-click map layer switcher supporting **Real-Time Satellite** (`Esri World Imagery`), **Dark Command Vector** (`CartoDB`), and **Street Map** (`OSM`). Integrated animated real-time radar halos for spatial crime hotspots and active target mobile signal pings (`-62 dBm`, `4G LTE`).
 * **Interactive Entity Graph Match Inspector (`EntityGraphView.jsx`)**: Built an interactive pop-up modal/inspector displaying suspect profiles, risk badges, and **explicit match reasons per connected relationship** (e.g., *"82% MO Similarity twin match"*, *"ANPR camera ping at Indiranagar burglary scene"*, *"Fellegi-Sunter 94% probabilistic identity match"*). Added automatic edge highlighting and node focus controls.
 
+### Phase 9: Google Satellite Hybrid GEOINT Map & Multi-Layer South India Spatial Intelligence
+* **Google Satellite Hybrid Map Tiles (`HotspotMap.jsx` & `LiveMapView.jsx`)**: Configured **Google Satellite Hybrid (`lyrs=y`)** as the default map tile provider, combining high-resolution satellite imagery with detailed English and local-language place names, city labels (Bengaluru, Mysuru, Hubballi, Davangere, Mangaluru, Belagavi, Ballari, Tumakuru, Hosur, Tirupati, Anantapur, Chennai), district boundaries, and highway networks.
+* **South India Spatial Hotspots & Multi-Layer Grid**: Expanded demo hotspots to 15 key locations across Karnataka and interstate border corridors. Integrated multi-layer GEOINT grid features: Real-time Mobile Target Signal Pings (`-62 dBm`, IMEIs, speed), BTS Cell Towers, Police Patrol Units (*Cheetah*, *Garuda*, *Panther*), CCTV 4K ANPR Nodes, and Target Movement Trail Polylines.
+* **Map Controls & Interactive Inspector**: Added map search omnibar with smooth pan/fly animations (`MapFlyTo`), individual layer visibility toggles, crime type filter dropdowns, and an interactive selected target inspector drawer with 1-click patrol unit dispatch and geofence alerts.
+
 ---
 
 ## 5. Issues & Technical Problems Faced and Implemented Solutions

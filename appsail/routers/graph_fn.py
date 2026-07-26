@@ -21,7 +21,16 @@ SEED_CASES = [
     {"case_id": "CASE-001", "crime_type": "Burglary", "latitude": 12.9579, "longitude": 77.6251, "date_time": "2026-01-10T03:30:00"},
     {"case_id": "CASE-002", "crime_type": "Burglary", "latitude": 12.9592, "longitude": 77.6235, "date_time": "2026-01-15T02:15:00"},
     {"case_id": "CASE-003", "crime_type": "Burglary", "latitude": 12.9610, "longitude": 77.6288, "date_time": "2026-01-20T23:45:00"},
-    {"case_id": "CASE-004", "crime_type": "Chain snatching", "latitude": 12.2958, "longitude": 76.6394, "date_time": "2026-02-01T10:15:00"}
+    {"case_id": "CASE-004", "crime_type": "Chain snatching", "latitude": 12.2958, "longitude": 76.6394, "date_time": "2026-02-01T10:15:00"},
+    {"case_id": "CASE-005", "crime_type": "Vehicle theft", "latitude": 13.0285, "longitude": 77.5896, "date_time": "2026-02-05T14:20:00"},
+    {"case_id": "CASE-006", "crime_type": "Extortion", "latitude": 12.8702, "longitude": 74.8806, "date_time": "2026-02-10T18:00:00"},
+    {"case_id": "CASE-007", "crime_type": "Burglary", "latitude": 15.3647, "longitude": 75.1240, "date_time": "2026-02-12T01:10:00"},
+    {"case_id": "CASE-008", "crime_type": "Vehicle theft", "latitude": 15.8497, "longitude": 74.4977, "date_time": "2026-02-14T21:45:00"},
+    {"case_id": "CASE-009", "crime_type": "Robbery", "latitude": 15.1394, "longitude": 76.9214, "date_time": "2026-02-16T19:30:00"},
+    {"case_id": "CASE-010", "crime_type": "Robbery", "latitude": 13.3379, "longitude": 77.1173, "date_time": "2026-02-18T22:15:00"},
+    {"case_id": "CASE-011", "crime_type": "Interstate Gang", "latitude": 12.7409, "longitude": 77.8253, "date_time": "2026-02-20T04:00:00"},
+    {"case_id": "CASE-012", "crime_type": "Narcotics", "latitude": 13.6288, "longitude": 79.4192, "date_time": "2026-02-22T11:50:00"},
+    {"case_id": "CASE-013", "crime_type": "Chain snatching", "latitude": 14.6819, "longitude": 77.6006, "date_time": "2026-02-24T16:10:00"}
 ]
 
 SEED_PERSONS = [

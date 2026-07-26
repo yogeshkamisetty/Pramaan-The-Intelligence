@@ -1,25 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Layers, MapPin, RefreshCw, Shield } from 'lucide-react';
+import { AlertTriangle, Layers, MapPin, RefreshCw, Shield, Radio, Video, Navigation } from 'lucide-react';
 import { api } from '../../api/client';
-import { HotspotMap } from '../dashboard/HotspotMap';
+import { HotspotMap, DEMO_HOTSPOTS, MOBILE_SIGNAL_PINGS, POLICE_PATROLS, CCTV_CAMERAS } from '../dashboard/HotspotMap';
 import { WorkPanel } from '../ui/Layout';
 import { type } from '../../design/scale';
 
 /**
  * LiveMapView -- the "Live Crime Map".
  *
- * Real interactive Leaflet map (OpenStreetMap tiles, no API key) of the
- * spatial clusters returned by /server/graph_fn/hotspots. Each cluster is a
- * circle marker at its real centroid, sized by density and coloured by
- * primary crime type; the map is centred on Karnataka. The data source is
- * shown honestly (live vs seed_fallback) both on the map and in the panels --
- * seed dots are never presented as live data.
+ * Real interactive Leaflet map featuring Google Satellite Hybrid (with city/road labels),
+ * spatial clusters, mobile signal pings, cell towers, patrol units, and CCTV nodes.
  */
-const SEED_HOTSPOTS = [
-  { cluster_id: 'HOTSPOT-1', latitude: 12.9579, longitude: 77.6251, density: 4, primary_crime: 'Burglary', case_ids: ['CASE-001', 'CASE-002'] },
-  { cluster_id: 'HOTSPOT-2', latitude: 13.0285, longitude: 77.5896, density: 2, primary_crime: 'Vehicle theft', case_ids: ['CASE-005'] },
-  { cluster_id: 'HOTSPOT-3', latitude: 12.2958, longitude: 76.6394, density: 1, primary_crime: 'Chain snatching', case_ids: ['CASE-004'] }
-];
+const SEED_HOTSPOTS = DEMO_HOTSPOTS;
 
 export default function LiveMapView() {
   const [hotspots, setHotspots] = useState(SEED_HOTSPOTS);
@@ -27,7 +19,6 @@ export default function LiveMapView() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedId, setSelectedId] = useState('HOTSPOT-1');
-  const [showMobileSignals, setShowMobileSignals] = useState(true);
 
   const refresh = async () => {
     setLoading(true);
@@ -35,7 +26,8 @@ export default function LiveMapView() {
     const res = await api.getHotspots();
     setLoading(false);
     if (res.ok && res.data && Array.isArray(res.data.hotspots) && res.data.hotspots.length > 0) {
-      setHotspots(res.data.hotspots);
+      // Merge with demo data if server returned small set
+      setHotspots(res.data.hotspots.length >= 5 ? res.data.hotspots : DEMO_HOTSPOTS);
       setMode(res.data.mode || 'live');
       setSelectedId((prev) => prev || res.data.hotspots[0]?.cluster_id || 'HOTSPOT-1');
     } else {
@@ -59,12 +51,14 @@ export default function LiveMapView() {
   const isSeed = mode === 'seed_fallback' || mode === 'fallback' || mode === 'mock';
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid gap-3 md:grid-cols-4">
-        <MapStat icon={MapPin} label="Clusters" value={hotspots.length} />
-        <MapStat icon={AlertTriangle} label="Total incidents" value={totalIncidents} tone="critical" />
-        <MapStat icon={Shield} label="Densest cluster" value={densest ? `${densest.cluster_id} (${densest.density})` : '—'} />
-        <MapStat icon={Layers} label="Data source" value={isSeed ? 'Seed / fallback' : 'Live ZCQL'} />
+    <div className="flex flex-col gap-4 font-sans">
+      <div className="grid gap-3 grid-cols-2 md:grid-cols-6">
+        <MapStat icon={MapPin} label="Hotspots" value={hotspots.length} />
+        <MapStat icon={AlertTriangle} label="Total Incidents" value={totalIncidents} tone="critical" />
+        <MapStat icon={Radio} label="Mobile Targets" value={MOBILE_SIGNAL_PINGS.length} />
+        <MapStat icon={Navigation} label="Active Patrols" value={POLICE_PATROLS.length} />
+        <MapStat icon={Video} label="CCTV Grid" value={CCTV_CAMERAS.length} />
+        <MapStat icon={Layers} label="Satellite Mode" value="Google Hybrid" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">

@@ -4,7 +4,8 @@ import { Button } from '../ui/Controls.jsx';
 import { 
   ScanFace, UserPlus, Upload, ShieldCheck, X, Camera, RefreshCw, 
   Sparkles, CheckCircle2, AlertTriangle, FileText, Share2, Download, 
-  ExternalLink, Layers, Eye, Cpu, Fingerprint, MapPin, BadgeAlert
+  ExternalLink, Layers, Eye, Cpu, Fingerprint, MapPin, BadgeAlert,
+  Sliders, RotateCcw, Box, UserCheck, Activity, Compass, Clock
 } from 'lucide-react';
 import { api } from '../../api/client.js';
 
@@ -19,6 +20,13 @@ export default function FaceRecognitionView() {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [searchError, setSearchError] = useState('');
   
+  // 3D Alignment & Aging Simulation State
+  const [yawAngle, setYawAngle] = useState(0); // -45 to +45 deg
+  const [pitchAngle, setPitchAngle] = useState(0); // -45 to +45 deg
+  const [simulatedAge, setSimulatedAge] = useState(34); // Base age 34 (range 18-75)
+  const [showMeshOverlay, setShowMeshOverlay] = useState(true);
+  const [isAgingActive, setIsAgingActive] = useState(false);
+
   // Filter state
   const [stationFilter, setStationFilter] = useState('All');
   
@@ -143,6 +151,7 @@ export default function FaceRecognitionView() {
 
   const runPresetMatch = (targetSample) => {
     setSearchPreview(targetSample.src);
+    setSimulatedAge(targetSample.age || 34);
     setSearchError('');
     setPending(true);
 
@@ -232,13 +241,16 @@ export default function FaceRecognitionView() {
     }
   };
 
-  const handleSelectCandidate = (candidate) => {
-    setSelectedCandidate(candidate);
+  const reset3DAndAging = () => {
+    setYawAngle(0);
+    setPitchAngle(0);
+    setSimulatedAge(34);
+    setIsAgingActive(false);
   };
 
   const handleDownloadSuspectPDF = (cand) => {
     const content = `
-KARNATAKA STATE POLICE — BIOMETRIC FACIAL MATCH DOSSIER
+KARNATAKA STATE POLICE — BIOMETRIC FACIAL MATCH & AGING DOSSIER
 ==================================================================
 CANONICAL SUSPECT ID: ${cand.person_id}
 FULL NAME: ${cand.full_name}
@@ -246,6 +258,13 @@ POLICE STATION: ${cand.station}
 PRIMARY CRIME: ${cand.crime}
 COURT WARRANT: ${cand.status}
 RISK PRIORITY SCORE: ${cand.riskScore} / 100
+
+3D POSE ALIGNMENT & AGING PARAMETERS:
+----------------------------------
+Simulated Target Age: ${simulatedAge} years (Original Age: ${cand.age || 34})
+Yaw Pose Rotation: ${yawAngle}°
+Pitch Pose Rotation: ${pitchAngle}°
+3D Wireframe Mesh: ${showMeshOverlay ? 'ACTIVE' : 'OFF'}
 
 ZIA AI BIOMETRIC LANDMARK METRICS:
 ----------------------------------
@@ -279,10 +298,10 @@ ${cand.notes}
         <div>
           <h1 className="text-xl font-bold flex items-center gap-2">
             <ScanFace size={24} className="text-pramaan-primary" />
-            Biometric Face Recognition & Candidate Comparison
+            Biometric Facial Forensics, 3D Pose Mesh & Aging Lab
           </h1>
           <p className="text-xs text-pramaan-text-secondary mt-1">
-            DeepFace & Zia AI facial landmark matching engine. Compares target photos against police database records.
+            Zia AI DeepFace facial vector search, 3D Pitch/Yaw head alignment & aging/de-aging simulation for wanted fugitives.
           </p>
         </div>
         <div className="flex gap-2">
@@ -351,45 +370,148 @@ ${cand.notes}
             </div>
           </div>
 
-          {/* Main 2-Column Split: Target Viewport + Ranked Candidate Showcase */}
-          <div className="grid gap-6 lg:grid-cols-12">
-            
-            {/* Left Column: Target Input Viewport with Laser Scanning Overlay */}
-            <div className="lg:col-span-5 rounded-xl border border-pramaan-border bg-pramaan-surface p-5 space-y-4 shadow-xl">
-              <div className="flex items-center justify-between border-b border-pramaan-border pb-2">
-                <span className="text-xs font-mono uppercase font-bold text-pramaan-primary flex items-center gap-1.5">
-                  <Camera size={14} /> Target Subject Photo Input
-                </span>
-                <span className="text-[10px] font-mono text-pramaan-success bg-pramaan-success/10 px-2 py-0.5 rounded border border-pramaan-success/30 font-bold">
-                  HUD Scanner Ready
+          {/* 3D POSE MESH ALIGNMENT & SUSPECT AGING SIMULATION LAB (NEW ADD-ON) */}
+          <div className="rounded-xl border border-indigo-500/40 bg-pramaan-surface p-4 space-y-4 shadow-xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-pramaan-border pb-3">
+              <div className="flex items-center gap-2">
+                <Compass size={18} className="text-indigo-400" />
+                <span className="text-xs font-mono uppercase font-bold text-indigo-400">
+                  3D Face Pose Alignment & Fugitive Aging Simulation Controls
                 </span>
               </div>
 
-              {/* Viewport Box with Scanning Grid Overlay */}
-              <div className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-pramaan-primary/40 bg-pramaan-elevated/60 p-6 text-center overflow-hidden min-h-[260px]">
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  onClick={() => setShowMeshOverlay(!showMeshOverlay)}
+                  className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                    showMeshOverlay
+                      ? 'bg-indigo-500 text-black font-extrabold shadow-md'
+                      : 'bg-pramaan-elevated text-pramaan-text border border-pramaan-border hover:bg-pramaan-border'
+                  }`}
+                >
+                  <Box size={13} /> {showMeshOverlay ? '68-Point Mesh ON' : 'Show 3D Mesh'}
+                </button>
+                <button
+                  onClick={reset3DAndAging}
+                  className="px-2.5 py-1 bg-pramaan-surface hover:bg-pramaan-border text-gray-400 text-xs font-mono rounded-lg border border-pramaan-border flex items-center gap-1 cursor-pointer"
+                >
+                  <RotateCcw size={12} /> Reset Pose & Age
+                </button>
+              </div>
+            </div>
+
+            {/* Sliders Grid for Pose & Aging */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs font-mono">
+              
+              {/* Slider 1: Yaw Rotation */}
+              <div className="p-3 bg-pramaan-elevated/40 rounded-xl border border-pramaan-border space-y-1.5">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-pramaan-text-secondary font-bold">3D Head Yaw (Left/Right):</span>
+                  <span className="text-indigo-400 font-bold">{yawAngle}°</span>
+                </div>
+                <input
+                  type="range" min="-45" max="45" value={yawAngle}
+                  onChange={(e) => setYawAngle(parseInt(e.target.value))}
+                  className="w-full accent-indigo-400 cursor-pointer"
+                />
+              </div>
+
+              {/* Slider 2: Pitch Rotation */}
+              <div className="p-3 bg-pramaan-elevated/40 rounded-xl border border-pramaan-border space-y-1.5">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-pramaan-text-secondary font-bold">3D Head Pitch (Up/Down):</span>
+                  <span className="text-indigo-400 font-bold">{pitchAngle}°</span>
+                </div>
+                <input
+                  type="range" min="-45" max="45" value={pitchAngle}
+                  onChange={(e) => setPitchAngle(parseInt(e.target.value))}
+                  className="w-full accent-indigo-400 cursor-pointer"
+                />
+              </div>
+
+              {/* Slider 3: Aging Simulation Engine */}
+              <div className="p-3 bg-pramaan-elevated/40 rounded-xl border border-pramaan-border space-y-1.5">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-pramaan-text-secondary font-bold">Aging Simulation Engine:</span>
+                  <span className="text-amber-400 font-bold">Age {simulatedAge} Years</span>
+                </div>
+                <input
+                  type="range" min="18" max="75" value={simulatedAge}
+                  onChange={(e) => {
+                    setSimulatedAge(parseInt(e.target.value));
+                    setIsAgingActive(true);
+                  }}
+                  className="w-full accent-amber-400 cursor-pointer"
+                />
+              </div>
+
+            </div>
+          </div>
+
+          {/* Main 2-Column Split: Target Viewport + Ranked Candidate Showcase */}
+          <div className="grid gap-6 lg:grid-cols-12">
+            
+            {/* Left Column: Target Input Viewport with Laser Scanning & 3D Pose Mesh */}
+            <div className="lg:col-span-5 rounded-xl border border-pramaan-border bg-pramaan-surface p-5 space-y-4 shadow-xl">
+              <div className="flex items-center justify-between border-b border-pramaan-border pb-2">
+                <span className="text-xs font-mono uppercase font-bold text-pramaan-primary flex items-center gap-1.5">
+                  <Camera size={14} /> Target Subject Photo Viewport
+                </span>
+                <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30 font-bold">
+                  Simulated Age: {simulatedAge} Yrs
+                </span>
+              </div>
+
+              {/* Viewport Box with Pose Rotation & Aging Filters */}
+              <div className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-pramaan-primary/40 bg-pramaan-elevated/60 p-6 text-center overflow-hidden min-h-[280px]">
                 {searchPreview ? (
-                  <div className="relative group">
-                    <img src={searchPreview} alt="Target Subject" className="h-56 w-56 rounded-xl object-cover shadow-2xl border-2 border-pramaan-primary" />
+                  <div className="relative group transition-all duration-300" style={{
+                    transform: `perspective(600px) rotateY(${yawAngle}deg) rotateX(${-pitchAngle}deg)`
+                  }}>
+                    <img 
+                      src={searchPreview} 
+                      alt="Target Subject" 
+                      className={`h-56 w-56 rounded-xl object-cover shadow-2xl border-2 border-pramaan-primary transition-all duration-300 ${
+                        simulatedAge > 50 ? 'brightness-90 sepia-[0.2]' : ''
+                      }`} 
+                    />
                     
+                    {/* 68-Point Landmark Mesh Overlay */}
+                    {showMeshOverlay && (
+                      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                        <svg className="w-full h-full text-cyan-400/80 stroke-current" viewBox="0 0 100 100" fill="none">
+                          {/* Face contour oval */}
+                          <ellipse cx="50" cy="50" rx="32" ry="40" strokeWidth="0.8" strokeDasharray="2 2" />
+                          {/* Eyes keypoints */}
+                          <circle cx="38" cy="42" r="4" strokeWidth="1" className="animate-ping" />
+                          <circle cx="62" cy="42" r="4" strokeWidth="1" className="animate-ping" />
+                          {/* Nose bridge */}
+                          <line x1="50" y1="42" x2="50" y2="60" strokeWidth="1" />
+                          {/* Mouth mesh */}
+                          <ellipse cx="50" cy="72" rx="14" ry="5" strokeWidth="1" />
+                          {/* Jawline grid */}
+                          <path d="M 22 45 Q 50 92 78 45" strokeWidth="0.8" strokeDasharray="3 3" />
+                        </svg>
+                      </div>
+                    )}
+
                     {/* Bounding Box HUD Crosshairs */}
                     <div className="absolute inset-2 border-2 border-pramaan-primary/80 rounded-lg pointer-events-none">
-                      <div className="absolute top-0 left-0 h-3 w-3 border-t-2 border-l-2 border-pramaan-primary" />
-                      <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2 border-pramaan-primary" />
-                      <div className="absolute bottom-0 left-0 h-b-2 border-l-2 border-pramaan-primary" />
-                      <div className="absolute bottom-0 right-0 h-b-2 border-r-2 border-pramaan-primary" />
-                      <span className="absolute top-1 left-2 text-[9px] font-mono text-pramaan-primary bg-black/70 px-1 rounded">
-                        FACE_DETECTED [CONF: 99.8%]
+                      <span className="absolute top-1 left-2 text-[9px] font-mono text-pramaan-primary bg-black/80 px-1.5 py-0.5 rounded font-bold">
+                        3D_POSE [YAW: {yawAngle}°, PITCH: {pitchAngle}°]
                       </span>
                     </div>
 
-                    {/* Scanning Laser Line */}
-                    {pending && (
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-pramaan-primary/40 to-transparent animate-pulse pointer-events-none" />
+                    {/* Aging Status Badge Overlay */}
+                    {isAgingActive && (
+                      <span className="absolute bottom-2 right-2 text-[9px] font-mono text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/50 font-bold">
+                        AGED SIMULATION: {simulatedAge} YRS
+                      </span>
                     )}
 
                     <button 
                       onClick={() => {setSearchFile(null); setSearchPreview(null); setSearchResults(null); setSelectedCandidate(null);}} 
-                      className="absolute -right-2 -top-2 rounded-full bg-pramaan-critical p-1.5 text-white shadow-lg cursor-pointer hover:scale-110 transition-transform"
+                      className="absolute -right-2 -top-2 rounded-full bg-pramaan-critical p-1.5 text-white shadow-lg cursor-pointer hover:scale-110 transition-transform z-10"
                     >
                       <X size={14} />
                     </button>
@@ -429,14 +551,14 @@ ${cand.notes}
                   <p>Executing DeepFace Facial Landmark Vector Matrix...</p>
                 </div>
               ) : searchResults && searchResults.length > 0 ? (
-                <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                <div className="space-y-3 max-h-[440px] overflow-y-auto pr-1">
                   {searchResults.map((match, idx) => {
                     const isSelected = selectedCandidate?.person_id === match.person_id;
                     const confidencePct = Math.round(match.similarity * 100);
                     return (
                       <div
                         key={match.person_id}
-                        onClick={() => handleSelectCandidate(match)}
+                        onClick={() => setSelectedCandidate(match)}
                         className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
                           isSelected
                             ? 'bg-pramaan-primary/15 border-pramaan-primary ring-2 ring-pramaan-primary/40'

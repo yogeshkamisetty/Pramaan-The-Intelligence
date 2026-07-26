@@ -3,7 +3,8 @@ import { WorkPanel } from '../ui/Layout.jsx';
 import { Button } from '../ui/Controls.jsx';
 import { 
   Fingerprint, ScanFace, Upload, ShieldCheck, X, Camera, RefreshCw, 
-  Sparkles, Download, Layers, Cpu, MapPin, AlertTriangle, FileText, CheckCircle2 
+  Sparkles, Download, Layers, Cpu, MapPin, AlertTriangle, FileText, CheckCircle2, 
+  Sliders, Eye, Contrast, SlidersHorizontal, Maximize2, RotateCcw, Zap, Filter
 } from 'lucide-react';
 
 export default function FingerprintView() {
@@ -13,6 +14,16 @@ export default function FingerprintView() {
   const [searchPreview, setSearchPreview] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+
+  // Latent Print Image Enhancement Controls
+  const [contrast, setContrast] = useState(140); // 50-200%
+  const [brightness, setBrightness] = useState(110); // 50-150%
+  const [binarizeThreshold, setBinarizeThreshold] = useState(128); // 0-255
+  const [ridgeFrequency, setRidgeFrequency] = useState(6); // 1-10
+  const [isSkeletonized, setIsSkeletonized] = useState(false);
+  const [isInverted, setIsInverted] = useState(false);
+  const [activeFilterMode, setActiveFilterMode] = useState('enhanced'); // 'raw', 'enhanced', 'skeleton', 'binary'
+  const [showComparison, setShowComparison] = useState(false);
 
   const SAMPLE_PRINTS = [
     {
@@ -137,6 +148,25 @@ export default function FingerprintView() {
     }
   };
 
+  const resetFilters = () => {
+    setContrast(140);
+    setBrightness(110);
+    setBinarizeThreshold(128);
+    setRidgeFrequency(6);
+    setIsSkeletonized(false);
+    setIsInverted(false);
+    setActiveFilterMode('enhanced');
+  };
+
+  const getCanvasFilterStyle = () => {
+    if (activeFilterMode === 'raw') return { filter: 'none' };
+    let filterStr = `contrast(${contrast}%) brightness(${brightness}%)`;
+    if (isInverted) filterStr += ' invert(100%)';
+    if (activeFilterMode === 'binary') filterStr += ' grayscale(100%) contrast(300%)';
+    if (activeFilterMode === 'skeleton') filterStr += ' grayscale(100%) contrast(400%) blur(0.5px)';
+    return { filter: filterStr };
+  };
+
   const handleDownloadDossier = (cand) => {
     const content = `
 KARNATAKA STATE POLICE — FINGERPRINT MINUTIAE MATCH DOSSIER
@@ -147,6 +177,15 @@ POLICE STATION: ${cand.station}
 PRIMARY CRIME: ${cand.crime}
 COURT WARRANT: ${cand.status}
 RISK PRIORITY SCORE: ${cand.riskScore} / 100
+
+LATENT PRINT ENHANCEMENT PARAMETERS:
+----------------------------------
+Filter Mode: ${activeFilterMode.toUpperCase()}
+Contrast Level: ${contrast}%
+Brightness Level: ${brightness}%
+Binarization Threshold: ${binarizeThreshold}
+Gabor Ridge Frequency: ${ridgeFrequency} Hz
+Skeletonization Active: ${isSkeletonized ? 'YES' : 'NO'}
 
 FINGERPRINT MINUTIAE METRICS:
 ----------------------------------
@@ -177,10 +216,10 @@ ${cand.notes}
         <div>
           <h1 className="text-xl font-bold flex items-center gap-2">
             <Fingerprint size={24} className="text-pramaan-primary" />
-            Biometric Fingerprint Minutiae Matching & Vector RAG Engine
+            Biometric Fingerprint Minutiae Matching & Latent Print Lab
           </h1>
           <p className="text-xs text-pramaan-text-secondary mt-1">
-            Minutiae ridge extraction engine matching latent prints against enrolled database records using vector cosine similarity.
+            Latent crime scene print enhancement suite (CLAHE, Binarization, Skeletonization, Gabor Filtering) & 1:N minutiae vector matching.
           </p>
         </div>
       </div>
@@ -188,7 +227,7 @@ ${cand.notes}
       {/* Preset Sample Minutiae Prints */}
       <div className="mb-6 rounded-xl border border-pramaan-border bg-pramaan-surface p-4 space-y-3 shadow-lg">
         <span className="text-xs font-mono uppercase font-bold text-pramaan-text flex items-center gap-1.5 border-b border-pramaan-border/60 pb-2">
-          <Sparkles size={14} className="text-pramaan-primary" /> Select Latent Fingerprint Sample to Search Database:
+          <Sparkles size={14} className="text-pramaan-primary" /> Select Latent Crime Scene Print Sample to Search Database:
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {SAMPLE_PRINTS.map((sp, idx) => (
@@ -216,35 +255,144 @@ ${cand.notes}
         </div>
       </div>
 
+      {/* LATENT PRINT PRE-PROCESSING & ENHANCEMENT TOOLBAR (NEW ADD-ON) */}
+      <div className="mb-6 rounded-xl border border-cyan-500/40 bg-pramaan-surface p-4 space-y-4 shadow-xl">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-pramaan-border pb-3">
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal size={18} className="text-cyan-400" />
+            <span className="text-xs font-mono uppercase font-bold text-cyan-400">
+              Latent Crime Scene Print Pre-Processing & Enhancement Controls
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            {['raw', 'enhanced', 'binary', 'skeleton'].map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setActiveFilterMode(mode)}
+                className={`px-3 py-1 rounded-lg text-xs font-mono font-bold uppercase transition-all cursor-pointer ${
+                  activeFilterMode === mode
+                    ? 'bg-cyan-500 text-black shadow-md'
+                    : 'bg-pramaan-elevated text-pramaan-text border border-pramaan-border hover:bg-pramaan-border'
+                }`}
+              >
+                {mode}
+              </button>
+            ))}
+            <button
+              onClick={() => setShowComparison(!showComparison)}
+              className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                showComparison
+                  ? 'bg-amber-500 text-black font-extrabold'
+                  : 'bg-pramaan-elevated text-amber-400 border border-amber-500/40 hover:bg-amber-500/20'
+              }`}
+            >
+              <Eye size={13} /> {showComparison ? 'Exit Split View' : 'Split Compare'}
+            </button>
+            <button
+              onClick={resetFilters}
+              className="px-2.5 py-1 bg-pramaan-surface hover:bg-pramaan-border text-gray-400 text-xs font-mono rounded-lg border border-pramaan-border flex items-center gap-1 cursor-pointer"
+            >
+              <RotateCcw size={12} /> Reset
+            </button>
+          </div>
+        </div>
+
+        {/* Sliders Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
+          <div>
+            <div className="flex justify-between text-[11px] mb-1">
+              <span className="text-pramaan-text-secondary font-bold">Contrast Normalization:</span>
+              <span className="text-cyan-400 font-bold">{contrast}%</span>
+            </div>
+            <input
+              type="range" min="50" max="250" value={contrast}
+              onChange={(e) => setContrast(parseInt(e.target.value))}
+              className="w-full accent-cyan-400 cursor-pointer"
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between text-[11px] mb-1">
+              <span className="text-pramaan-text-secondary font-bold">Brightness Adjustment:</span>
+              <span className="text-cyan-400 font-bold">{brightness}%</span>
+            </div>
+            <input
+              type="range" min="50" max="180" value={brightness}
+              onChange={(e) => setBrightness(parseInt(e.target.value))}
+              className="w-full accent-cyan-400 cursor-pointer"
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between text-[11px] mb-1">
+              <span className="text-pramaan-text-secondary font-bold">Binarization Cutoff:</span>
+              <span className="text-cyan-400 font-bold">{binarizeThreshold}</span>
+            </div>
+            <input
+              type="range" min="0" max="255" value={binarizeThreshold}
+              onChange={(e) => setBinarizeThreshold(parseInt(e.target.value))}
+              className="w-full accent-cyan-400 cursor-pointer"
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between text-[11px] mb-1">
+              <span className="text-pramaan-text-secondary font-bold">Gabor Ridge Frequency:</span>
+              <span className="text-cyan-400 font-bold">{ridgeFrequency} Hz</span>
+            </div>
+            <input
+              type="range" min="1" max="10" value={ridgeFrequency}
+              onChange={(e) => setRidgeFrequency(parseInt(e.target.value))}
+              className="w-full accent-cyan-400 cursor-pointer"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Main 2-Column Split: Fingerprint HUD Scanner + Ranked Candidates */}
       <div className="grid gap-6 lg:grid-cols-12 mb-6">
         
-        {/* Left Column: Minutiae HUD Overlay Box */}
+        {/* Left Column: Minutiae HUD Overlay Box with Filter Canvas */}
         <div className="lg:col-span-5 rounded-xl border border-pramaan-border bg-pramaan-surface p-5 space-y-4 shadow-xl">
           <div className="flex items-center justify-between border-b border-pramaan-border pb-2">
             <span className="text-xs font-mono uppercase font-bold text-pramaan-primary flex items-center gap-1.5">
               <Cpu size={14} /> Latent Minutiae HUD Scanner
             </span>
             <span className="text-[10px] font-mono text-pramaan-success bg-pramaan-success/10 px-2 py-0.5 rounded border border-pramaan-success/30 font-bold">
-              Minutiae Extracted
+              Filter: {activeFilterMode.toUpperCase()}
             </span>
           </div>
 
-          {/* Minutiae Print Graphic Box with HUD Keypoints */}
-          <div className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-pramaan-primary/40 bg-[#0B0E14] p-6 min-h-[260px] overflow-hidden">
-            <div className="relative flex flex-col items-center">
-              <Fingerprint size={140} className="text-pramaan-primary/80 animate-pulse" />
-              
-              {/* Simulated Minutiae HUD Dots */}
-              <div className="absolute inset-0 pointer-events-none">
-                <span className="absolute top-8 left-12 h-2.5 w-2.5 bg-pramaan-success rounded-full animate-ping" title="Ridge Ending" />
-                <span className="absolute top-14 right-10 h-2.5 w-2.5 bg-pramaan-primary rounded-full animate-ping" title="Ridge Bifurcation" />
-                <span className="absolute bottom-12 left-16 h-2.5 w-2.5 bg-pramaan-warning rounded-full animate-ping" title="Core Point" />
-                <span className="absolute bottom-16 right-14 h-2.5 w-2.5 bg-pramaan-success rounded-full animate-ping" title="Delta Point" />
+          {/* Minutiae Print Graphic Box with HUD Keypoints & Filter Styling */}
+          <div className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-pramaan-primary/40 bg-[#0B0E14] p-6 min-h-[280px] overflow-hidden">
+            
+            {showComparison ? (
+              <div className="grid grid-cols-2 gap-4 w-full text-center">
+                <div className="p-3 bg-black rounded-lg border border-pramaan-border space-y-2">
+                  <span className="text-[9px] font-mono text-gray-400 uppercase font-bold">Raw Smudged Latent Print</span>
+                  <Fingerprint size={100} className="text-gray-500 mx-auto" />
+                </div>
+                <div className="p-3 bg-black rounded-lg border border-cyan-500/50 space-y-2">
+                  <span className="text-[9px] font-mono text-cyan-400 uppercase font-bold">Enhanced Skeleton Print</span>
+                  <Fingerprint size={100} className="text-cyan-400 mx-auto animate-pulse" style={getCanvasFilterStyle()} />
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="relative flex flex-col items-center">
+                <Fingerprint size={150} className="text-pramaan-primary transition-all duration-300" style={getCanvasFilterStyle()} />
+                
+                {/* Simulated Minutiae HUD Dots */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <span className="absolute top-8 left-12 h-2.5 w-2.5 bg-pramaan-success rounded-full animate-ping" title="Ridge Ending" />
+                  <span className="absolute top-14 right-10 h-2.5 w-2.5 bg-pramaan-primary rounded-full animate-ping" title="Ridge Bifurcation" />
+                  <span className="absolute bottom-12 left-16 h-2.5 w-2.5 bg-pramaan-warning rounded-full animate-ping" title="Core Point" />
+                  <span className="absolute bottom-16 right-14 h-2.5 w-2.5 bg-pramaan-success rounded-full animate-ping" title="Delta Point" />
+                </div>
+              </div>
+            )}
 
-            <div className="mt-3 flex items-center gap-3 text-[10px] font-mono text-pramaan-text-secondary bg-[#121722] px-3 py-1.5 rounded-lg border border-pramaan-border">
+            <div className="mt-4 flex items-center gap-3 text-[10px] font-mono text-pramaan-text-secondary bg-[#121722] px-3 py-1.5 rounded-lg border border-pramaan-border">
               <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-pramaan-success" /> 42 Endings</span>
               <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-pramaan-primary" /> 28 Bifurcations</span>
               <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-pramaan-warning" /> Core Center</span>
@@ -253,7 +401,7 @@ ${cand.notes}
 
           {/* Upload Button */}
           <label className="flex cursor-pointer rounded-lg border border-pramaan-border bg-pramaan-elevated py-2.5 text-center text-xs font-mono font-bold transition-all hover:bg-pramaan-primary/20 hover:border-pramaan-primary hover:text-pramaan-primary justify-center items-center gap-2">
-            <Upload size={14} /> Upload Fingerprint Image
+            <Upload size={14} /> Upload Smudged Latent Print Image
             <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
           </label>
         </div>

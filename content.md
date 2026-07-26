@@ -180,6 +180,14 @@ The Pramaan backend is built as a unified, high-performance containerized **Fast
 * **Cross-District Serial Crime Network Diagram**: Implemented visual link diagrams showing interconnected twin cases, police station jurisdictions (Ashoknagar, Hebbal, Hubballi, Belagavi, Attibele), and canonical suspect hubs (`CANON-0042 - Mohammed Rafi`).
 * **Automated Match Reason Checklist & Joint Dispatch Actions**: Integrated automated evidence checklists and 1-click actions for **"Dispatch Cross-Station Alert"** and **"Export Joint Twin Dossier (PDF)"**.
 
+### Phase 11: Global Case Registration Modal & TopBar Quick Action
+* **Global Header New Case Action (`TopBar.jsx` & `App.jsx`)**: Pinned a high-visibility `+ New Case` quick action button in the main navigation bar, allowing officers to register new FIRs from any view in Pramaan.
+* **12-Section Comprehensive FIR Registration Suite (`NewCaseRegistration.jsx`)**: Built a multi-step registration modal covering Basic Information, GPS Location, Incident Datetime, IO Assignment, Complainants, Dynamic Victims, Suspects, Witnesses, Physical/Digital Evidence, Kannada/English Crime Descriptions, AI Summary Generator, and File Attachments.
+
+### Phase 12: Biometric & Latent Forensics Upgrade (Fingerprint & Face Recognition Labs)
+* **Latent Crime Scene Print Pre-Processing Toolbar (`FingerprintView.jsx`)**: Integrated interactive pre-processing controls for smudged crime scene latent prints including **Contrast Normalization (CLAHE)**, **Brightness Tuning**, **Binarization Cutoff**, **Gabor Ridge Frequency Filtering**, and **Real-Time Split-Screen Compare View**.
+* **3D Face Pose Alignment & Fugitive Aging Simulator (`FaceRecognitionView.jsx`)**: Implemented **3D Pitch & Yaw Head Rotation Sliders** (-45° to +45°), **68-Point Facial Landmark Wireframe Mesh Overlay**, and an **Interactive Age Progression Engine** (Age 18 to 75 years) for tracking long-standing missing persons and fleeing wanted fugitives.
+
 ---
 
 ## 5. Issues & Technical Problems Faced and Implemented Solutions

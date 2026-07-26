@@ -71,7 +71,7 @@
   --pramaan-text-secondary: #8A97AD;
 }
 
-/* Explicit Override for dark:text-black requested by user to ensure #f9f9f9 bright text */
+/* Explicit Override for dark:text-black requested by user to ensure #f9f9f9 bright text in dark theme */
 .dark .dark\:text-black,
 :is(.dark *) .dark\:text-black {
   color: #f9f9f9 !important;

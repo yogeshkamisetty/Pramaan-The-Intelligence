@@ -100,21 +100,23 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
                     title={collapsed ? displayLabel : undefined}
                     className={`group relative flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-left transition-all cursor-pointer active:scale-[0.98] ${
                       isActive
-                        ? 'bg-pramaan-elevated text-[#f9f9f9] dark:text-[#f9f9f9] font-extrabold border-2 border-white/80 dark:border-white/90 shadow-lg scale-[1.01]'
+                        ? 'bg-pramaan-elevated text-[#0F172A] dark:text-[#f9f9f9] font-extrabold border-2 border-[#0F172A] dark:border-white/90 shadow-lg scale-[1.01]'
                         : isAllowed
                         ? 'text-pramaan-text hover:bg-pramaan-elevated hover:text-pramaan-primary font-semibold border border-transparent'
                         : 'text-pramaan-text-secondary/40 hover:bg-pramaan-elevated/40 border border-transparent'
                     }`}
                   >
-                    {/* Active Left Pill Accent */}
+                    {/* Active Left Pill Accent (Black in Light mode, White in Dark mode) */}
                     {isActive && (
-                      <span className="absolute inset-y-2 left-0 w-1.5 rounded-r-full bg-[#f9f9f9] shadow-sm" />
+                      <span className="absolute inset-y-2 left-0 w-1.5 rounded-r-full bg-[#0F172A] dark:bg-[#f9f9f9] shadow-sm" />
                     )}
 
-                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className={`shrink-0 ${isActive ? 'text-[#f9f9f9]' : 'text-pramaan-primary'}`} />
+                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className={`shrink-0 ${isActive ? 'text-[#0F172A] dark:text-[#f9f9f9]' : 'text-pramaan-primary'}`} />
                     
                     {!collapsed && (
-                      <span className="truncate text-xs font-extrabold flex-1 text-[#f9f9f9]">{displayLabel}</span>
+                      <span className={`truncate text-xs font-extrabold flex-1 ${isActive ? 'text-[#0F172A] dark:text-[#f9f9f9]' : 'text-pramaan-text'}`}>
+                        {displayLabel}
+                      </span>
                     )}
 
                     {!isAllowed && !collapsed && (
@@ -125,7 +127,7 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
                     {item.badge && !collapsed && isAllowed && (
                       <span className={`ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-mono font-bold shadow-xs ${
                         isActive 
-                          ? 'bg-[#f9f9f9] text-black font-extrabold' 
+                          ? 'bg-[#0F172A] text-white dark:bg-[#f9f9f9] dark:text-black font-extrabold' 
                           : 'bg-pramaan-primary/20 text-pramaan-primary border border-pramaan-primary/40'
                       }`}>
                         {item.badge}

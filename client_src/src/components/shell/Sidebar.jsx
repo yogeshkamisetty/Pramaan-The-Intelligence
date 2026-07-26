@@ -52,18 +52,18 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
   const t = translations[language] || translations.EN;
 
   return (
-    <aside className={`flex h-full self-stretch min-h-full ${w} shrink-0 flex-col bg-[#17252A] text-white transition-[width] duration-200 select-none z-20 shadow-xl font-sans`}>
+    <aside className={`flex h-full self-stretch min-h-full ${w} shrink-0 flex-col bg-pramaan-surface text-pramaan-text border-r border-pramaan-border transition-[width] duration-200 select-none z-20 shadow-xl font-sans`}>
       
       {/* Top Header Branding */}
-      <div className="p-4 sm:p-5 border-b border-[#2B7A78]/30 bg-[#121E22]">
+      <div className="p-4 sm:p-5 border-b border-pramaan-border bg-pramaan-elevated/60">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2B7A78]/30 border border-[#3AAFA9]/40 text-[#3AAFA9]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-pramaan-primary/15 border border-pramaan-primary/30 text-pramaan-primary">
             <ShieldCheck size={22} />
           </div>
           {!collapsed && (
             <div className="min-w-0 leading-tight hidden md:block">
-              <div className="truncate text-white font-black font-mono tracking-wider text-base">PRAMAAN</div>
-              <div className="truncate text-[#DEF2F1]/80 text-[10px] font-semibold">KSP Crime Intelligence</div>
+              <div className="truncate text-pramaan-text font-black font-mono tracking-wider text-base">PRAMAAN</div>
+              <div className="truncate text-pramaan-text-secondary text-[10px] font-semibold">KSP Crime Intelligence</div>
             </div>
           )}
         </div>
@@ -74,7 +74,7 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
         {groupsConfig.map((g, idx) => (
           <div key={`${g.headingKey}-${idx}`} className="space-y-1">
             {!collapsed && (
-              <div className="px-3 text-[10px] font-bold uppercase tracking-widest text-[#3AAFA9] hidden md:block mb-1.5">
+              <div className="px-3 text-[10px] font-bold uppercase tracking-widest text-pramaan-primary hidden md:block mb-1.5 font-mono">
                 {t[g.headingKey] || g.headingKey}
               </div>
             )}
@@ -89,25 +89,25 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
                   <button
                     key={`${item.key}-${itemIdx}`}
                     onClick={() => onChange(item.key)}
-                    className={`group relative flex w-full items-center gap-3 rounded-full px-4 py-2 text-left transition-all cursor-pointer active:scale-95 ${
+                    className={`group relative flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left transition-all cursor-pointer active:scale-[0.98] ${
                       isActive
-                        ? 'bg-[#2B7A78] text-white border border-[#3AAFA9] font-extrabold shadow-md ring-1 ring-[#3AAFA9]/50 scale-[1.02]'
+                        ? 'bg-pramaan-primary text-black font-extrabold shadow-md scale-[1.01]'
                         : isAllowed
-                        ? 'text-[#DEF2F1]/80 hover:bg-[#2B7A78]/30 hover:text-white font-medium'
-                        : 'text-slate-500/50 hover:bg-[#2B7A78]/10'
+                        ? 'text-pramaan-text-secondary hover:bg-pramaan-elevated hover:text-pramaan-text font-medium'
+                        : 'text-pramaan-text-secondary/40 hover:bg-pramaan-elevated/40'
                     }`}
                   >
-                    <Icon size={17} strokeWidth={isActive ? 2.25 : 1.75} className={`shrink-0 ${isActive ? 'text-[#3AAFA9]' : 'text-slate-400'}`} />
+                    <Icon size={17} strokeWidth={isActive ? 2.25 : 1.75} className={`shrink-0 ${isActive ? 'text-black' : 'text-pramaan-text-secondary'}`} />
                     {!collapsed && <span className="truncate text-xs hidden md:inline">{displayLabel}</span>}
 
                     {!isAllowed && !collapsed && (
-                      <Lock size={12} className="ml-auto shrink-0 text-slate-400/60 hidden md:block" title={`Requires ${requiredPermissionFor(item.key)}`} />
+                      <Lock size={12} className="ml-auto shrink-0 text-pramaan-text-secondary/40 hidden md:block" title={`Requires ${requiredPermissionFor(item.key)}`} />
                     )}
 
                     {/* Badge Pill */}
                     {item.badge && !collapsed && isAllowed && (
-                      <span className={`ml-auto flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-mono font-bold shadow-xs ${
-                        isActive ? 'bg-[#3AAFA9] text-[#17252A]' : 'bg-[#2B7A78] text-white'
+                      <span className={`ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-mono font-bold shadow-xs ${
+                        isActive ? 'bg-black text-white' : 'bg-pramaan-primary/20 text-pramaan-primary'
                       }`}>
                         {item.badge}
                       </span>
@@ -121,13 +121,13 @@ export function Sidebar({ active, onChange, activeRole = 'ACP', language = 'EN' 
       </nav>
 
       {/* Footer Role Badge Info */}
-      <div className="p-3 border-t border-[#2B7A78]/30 bg-[#121E22] text-xs">
-        <div className="flex items-center gap-2.5 px-3 py-2 rounded-2xl bg-[#17252A] border border-[#2B7A78]">
-          <Shield size={16} className="text-[#3AAFA9] shrink-0" />
+      <div className="p-3 border-t border-pramaan-border bg-pramaan-elevated/60 text-xs">
+        <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-pramaan-surface border border-pramaan-border">
+          <Shield size={16} className="text-pramaan-primary shrink-0" />
           {!collapsed && (
             <div className="min-w-0 flex-1 hidden md:block">
-              <div className="text-[10px] font-mono text-[#3AAFA9] truncate font-bold uppercase tracking-wide">CLEARANCE LEVEL</div>
-              <div className="text-xs font-extrabold text-white truncate">{ROLE_LABELS[activeRole] || activeRole}</div>
+              <div className="text-[10px] font-mono text-pramaan-primary truncate font-bold uppercase tracking-wide">CLEARANCE LEVEL</div>
+              <div className="text-xs font-extrabold text-pramaan-text truncate">{ROLE_LABELS[activeRole] || activeRole}</div>
             </div>
           )}
         </div>

@@ -129,7 +129,7 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
 
         {/* Row 1 — High-Tech Stat Tiles (4-Up Grid) */}
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div className="rounded-xl border border-pramaan-border bg-gradient-to-br from-[#121722] to-[#182030] p-4 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+          <div className="rounded-xl border border-pramaan-border bg-pramaan-surface p-4 flex flex-col justify-between shadow-md relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-pramaan-text-secondary">Active Cases</span>
               <Activity size={16} className="text-pramaan-primary opacity-80" />
@@ -140,7 +140,7 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
             </div>
           </div>
 
-          <div className="rounded-xl border border-pramaan-border bg-gradient-to-br from-[#121722] to-[#182030] p-4 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+          <div className="rounded-xl border border-pramaan-border bg-pramaan-surface p-4 flex flex-col justify-between shadow-md relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-pramaan-text-secondary">Open Alerts</span>
               <AlertTriangle size={16} className="text-pramaan-warning opacity-80" />
@@ -151,7 +151,7 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
             </div>
           </div>
 
-          <div className="rounded-xl border border-pramaan-critical/30 bg-gradient-to-br from-[#181217] to-[#251419] p-4 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+          <div className="rounded-xl border border-pramaan-critical/30 bg-pramaan-surface p-4 flex flex-col justify-between shadow-md relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-pramaan-critical">Critical Priority</span>
               <ShieldCheck size={16} className="text-pramaan-critical opacity-80 animate-pulse" />
@@ -162,17 +162,17 @@ export default function OverviewView({ onOpenCase, activeRole = 'ACP' }) {
             </div>
           </div>
 
-          <div className="rounded-xl border border-pramaan-secondary/30 bg-gradient-to-br from-[#121722] to-[#142232] p-4 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+          <div className="rounded-xl border border-pramaan-secondary/30 bg-pramaan-surface p-4 flex flex-col justify-between shadow-md relative overflow-hidden group">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-pramaan-secondary">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-pramaan-primary">
                 {isAggregateOnly ? 'Cluster Rollups' : 'Resolved Identities'}
               </span>
-              <Layers size={16} className="text-pramaan-secondary opacity-80" />
+              <Layers size={16} className="text-pramaan-primary opacity-80" />
             </div>
-            <div className="text-3xl font-mono font-bold text-pramaan-secondary mt-2">
+            <div className="text-3xl font-mono font-bold text-pramaan-primary mt-2">
               {isAggregateOnly ? 14 : resolvedIdsCount}
             </div>
-            <div className="text-[11px] font-mono font-bold text-pramaan-secondary mt-1 flex items-center gap-1">
+            <div className="text-[11px] font-mono font-bold text-pramaan-primary mt-1 flex items-center gap-1">
               <span>Canonical graph</span>
             </div>
           </div>

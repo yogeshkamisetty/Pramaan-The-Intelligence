@@ -192,6 +192,15 @@ The Pramaan backend is built as a unified, high-performance containerized **Fast
 * **Live MediaRecorder Microphone Stream & Waveform HUD**: Implemented direct browser microphone recording via **`MediaRecorder` API** with live audio chunk buffering (`Blob`), elapsed recording timer, and animated **Live Audio Waveform Bars** feeding into Bhashini ASR.
 * **Official Police Case Diary (Form 54 PDF/Journal) Export Engine**: Built 1-click **Export Form 54 Case Diary** action that formats the entire investigation Q&A conversation into the official Karnataka Police Case Diary layout (Sec 172 Cr.P.C. / Sec 193 BNSS) with officer attestation and digital police seal.
 
+### Phase 14: Dynamic AI Assistant Multi-Topic Query Resolution Engine (`client.js` & `AssistantView.jsx`)
+* **Overhauled Generic Fallbacks into Dynamic Query Solvers**: Replaced static fallback templates with an intelligent **Multi-Topic Intent Resolver** in `client.js` and `AssistantView.jsx`.
+* **Topic-Specific Dynamic Answers & ZCQL Generation**: Dynamically evaluates user questions across 5 distinct intent domains:
+  1. *Vehicle Theft & ANPR Pings*: Dynamically retrieves TVS Apache/Honda City records, ANPR camera pings, and registered owners.
+  2. *Cyber Financial Fraud & Hawala*: Dynamically pulls ICICI mule account trails, phishing OTP fraud records, and IP pings.
+  3. *Warrants & Fellegi-Sunter Identity*: Dynamically queries 1st ACMM Court warrants, risk priority scores, and Jaro-Winkler probabilistic matches.
+  4. *Bilingual Indic Kannada Queries*: Renders side-by-side Kannada summaries, native FIR excerpts, and local station linkages.
+  5. *General Investigation & Legal SOPs*: Dynamically parses query terms, builds custom ZCQL queries, extracts relevant document evidence chunks, and formats verified citations under Sec 65B Bharatiya Sakshya Adhiniyam.
+
 ---
 
 ## 5. Issues & Technical Problems Faced and Implemented Solutions

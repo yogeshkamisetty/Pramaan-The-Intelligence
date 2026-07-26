@@ -27,8 +27,8 @@ export function ExplainabilityTooltip({ row, weights }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1.5 w-80 bg-pramaan-surface border-2 border-pramaan-border p-3.5 rounded-xl shadow-2xl text-xs text-pramaan-text z-[3000] pointer-events-none animate-in fade-in zoom-in-95 duration-150">
-          <div className="font-bold text-pramaan-primary mb-1.5 border-b border-pramaan-border pb-1 font-mono text-[11px] uppercase tracking-wide flex items-center justify-between">
+        <div className="absolute right-0 top-full mt-1.5 w-80 bg-[#121722] opacity-100 border-2 border-[#263044] p-3.5 rounded-xl shadow-2xl text-xs text-pramaan-text z-[9999] pointer-events-auto animate-in fade-in zoom-in-95 duration-150 font-sans">
+          <div className="font-bold text-pramaan-primary mb-1.5 border-b border-[#263044] pb-1 font-mono text-[11px] uppercase tracking-wide flex items-center justify-between">
             <span>Auditable Priority Calculation</span>
             <span className="text-amber-400 font-bold">{validScore.toFixed(1)} PTS</span>
           </div>

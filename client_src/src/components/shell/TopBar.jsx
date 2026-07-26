@@ -120,10 +120,10 @@ export function TopBar({
             )}
           </button>
 
-          {/* Notifications Dropdown */}
+          {/* Notifications Dropdown (100% Solid Opaque Background) */}
           {showNotifications && (
-            <div className="absolute right-0 top-full mt-2 w-84 sm:w-[420px] max-w-[92vw] rounded-2xl border-2 border-pramaan-border bg-pramaan-surface shadow-2xl overflow-hidden z-[3000]">
-              <div className="border-b border-pramaan-border p-3.5 bg-pramaan-elevated space-y-2">
+            <div className="absolute right-0 top-full mt-2 w-84 sm:w-[420px] max-w-[92vw] rounded-2xl border-2 border-[#263044] bg-[#121722] opacity-100 shadow-2xl overflow-hidden z-[9999] font-sans">
+              <div className="border-b border-[#263044] p-3.5 bg-[#161C2A] space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pramaan-primary/20 text-pramaan-primary">

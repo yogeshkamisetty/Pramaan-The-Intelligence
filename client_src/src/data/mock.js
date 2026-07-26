@@ -61,9 +61,161 @@ export const graphEdges = [
 ];
 
 export const caseTypeBreakdown = [
-  { type: 'Burglary', count: 4 },
-  { type: 'Vehicle theft', count: 2 },
-  { type: 'Cyber ATM Theft', count: 1 },
-  { type: 'Narcotics Smuggling', count: 1 },
-  { type: 'Chain snatching', count: 1 },
+  { type: 'Burglary', count: 4, color: '#EF4444' },
+  { type: 'Vehicle theft', count: 2, color: '#F59E0B' },
+  { type: 'Cyber ATM Theft', count: 1, color: '#8B5CF6' },
+  { type: 'Narcotics Smuggling', count: 1, color: '#10B981' },
+  { type: 'Chain snatching', count: 1, color: '#3B82F6' },
 ];
+
+// ── Suspect Profiles with mugshot images ────────────────────
+export const suspectProfiles = [
+  {
+    canonicalId: 'CANON-0042',
+    name: 'Mohammed Rafi',
+    nameKannada: 'ಮೊಹಮ್ಮದ್ ರಫಿ',
+    age: 34,
+    gender: 'Male',
+    phone: '98450 12345',
+    address: '14th Main, Indiranagar, Bengaluru',
+    vehicleReg: 'KA-02-MB-1234',
+    image: '/demo/suspect_1.png',
+    priorityScore: 87.4,
+    riskLevel: 'critical',
+    linkedCases: ['CASE-001', 'CASE-002', 'CASE-005'],
+    warrants: [{ id: 'WAR-2026-001', court: '1st ACMM Court', date: '2026-01-20', status: 'Active' }],
+    aliases: ['Mohammad Rafi', 'M. Rafi', 'Rafi Mohammed'],
+    lastSeen: '2026-07-20 14:30',
+    lastLocation: 'Koramangala, Bengaluru',
+    bio: 'Serial burglary suspect linked to nighttime residential break-ins across Bengaluru Central. Known to use crowbar for rear-window entry. Previously arrested in 2024 for similar offenses. Currently absconding with active warrant.',
+    fingerprint: 'FP-KSP-04218',
+    aadharLinked: false
+  },
+  {
+    canonicalId: 'CANON-0044',
+    name: 'S. Praveen Kumar',
+    nameKannada: 'ಎಸ್. ಪ್ರವೀಣ ಕುಮಾರ',
+    age: 41,
+    gender: 'Male',
+    phone: '99008 81122',
+    address: '2nd Block, Jayanagar, Bengaluru',
+    vehicleReg: null,
+    image: '/demo/suspect_2.png',
+    priorityScore: 64.2,
+    riskLevel: 'warning',
+    linkedCases: ['CASE-002', 'CASE-003'],
+    warrants: [{ id: 'WAR-2026-003', court: 'City Civil Court', date: '2026-03-15', status: 'Active' }],
+    aliases: ['Praveen S.K.', 'P. Kumar'],
+    lastSeen: '2026-07-18 09:15',
+    lastLocation: 'Jayanagar, Bengaluru',
+    bio: 'Suspected accomplice in daytime residential burglaries. Known to operate during office hours when residents are away. Lock-picking specialist.',
+    fingerprint: 'FP-KSP-04412',
+    aadharLinked: false
+  },
+  {
+    canonicalId: 'CANON-0048',
+    name: 'V. Kumar (Cyber)',
+    nameKannada: 'ವಿ. ಕುಮಾರ್',
+    age: 28,
+    gender: 'Male',
+    phone: '97310 49281',
+    address: '4th Block, Jayanagar, Bengaluru',
+    vehicleReg: 'KA-03-MN-5678',
+    image: null,
+    priorityScore: 78.5,
+    riskLevel: 'critical',
+    linkedCases: ['CASE-006'],
+    warrants: [],
+    aliases: ['Vijay Kumar', 'Cyber Vijay'],
+    lastSeen: '2026-07-22 16:00',
+    lastLocation: 'Jayanagar 4th Block ATM',
+    bio: 'Suspected leader of ATM card cloning syndicate. Operates with sophisticated skimming devices. Linked to ₹14+ lakh in fraudulent withdrawals across 5 ATM locations.',
+    fingerprint: 'FP-KSP-04890',
+    aadharLinked: false
+  },
+  {
+    canonicalId: 'CANON-0050',
+    name: 'Rashid Khan',
+    nameKannada: 'ರಶೀದ್ ಖಾನ್',
+    age: 45,
+    gender: 'Male',
+    phone: '98800 77112',
+    address: 'Port Area, Mangaluru',
+    vehicleReg: 'KA-19-KK-3344',
+    image: null,
+    priorityScore: 91.2,
+    riskLevel: 'critical',
+    linkedCases: ['CASE-007'],
+    warrants: [{ id: 'WAR-2026-007', court: 'Special NDPS Court', date: '2026-02-28', status: 'Active' }],
+    aliases: ['R. Khan', 'Rashid M. Khan'],
+    lastSeen: '2026-07-19 06:45',
+    lastLocation: 'Mangaluru Port',
+    bio: 'Primary suspect in contraband narcotics smuggling ring operating through Mangaluru port. 45kg narcotics seized from associate warehouse. International connections suspected.',
+    fingerprint: 'FP-KSP-05001',
+    aadharLinked: false
+  }
+];
+
+// ── Case Images ─────────────────────────────────────────────
+export const caseImages = {
+  'CASE-001': '/demo/crime_scene.svg',
+  'CASE-002': '/demo/crime_scene.svg',
+  'CASE-005': '/demo/crime_scene.svg',
+  'CASE-006': '/demo/command_center.svg',
+  'CASE-007': '/demo/crime_scene.svg',
+};
+
+// ── Police Station Locations ────────────────────────────────
+export const stationLocations = [
+  { id: 'STATION-BGLR-CENTRAL', name: 'Bengaluru Central PS', lat: 12.9716, lng: 77.5946, district: 'Bengaluru Urban', activeCases: 3, officerCount: 45 },
+  { id: 'STATION-BGLR-SOUTH', name: 'Bengaluru South PS', lat: 12.9352, lng: 77.5858, district: 'Bengaluru Urban', activeCases: 1, officerCount: 38 },
+  { id: 'STATION-BGLR-NORTH', name: 'Bengaluru North PS', lat: 13.0285, lng: 77.5896, district: 'Bengaluru Urban', activeCases: 1, officerCount: 42 },
+  { id: 'STATION-MYS-CENTRAL', name: 'Mysuru Central PS', lat: 12.2958, lng: 76.6394, district: 'Mysuru', activeCases: 1, officerCount: 35 },
+  { id: 'STATION-JAYANAGAR-CYBER', name: 'Jayanagar Cyber PS', lat: 12.9250, lng: 77.5938, district: 'Bengaluru Urban', activeCases: 1, officerCount: 20 },
+  { id: 'STATION-MANGALURU-PORT', name: 'Mangaluru Port PS', lat: 12.8654, lng: 74.8426, district: 'Dakshina Kannada', activeCases: 1, officerCount: 30 },
+  { id: 'STATION-TUMAKURU-HWY', name: 'Tumakuru Highway PS', lat: 13.3409, lng: 77.1010, district: 'Tumakuru', activeCases: 1, officerCount: 25 },
+];
+
+// ── Case Timelines ──────────────────────────────────────────
+export const caseTimelines = {
+  'CASE-001': [
+    { time: '2026-01-10 03:30', event: 'Burglary reported at 3rd Cross, Indiranagar', type: 'incident', icon: 'alert' },
+    { time: '2026-01-10 04:15', event: 'FIR registered at Bengaluru Central PS', type: 'fir', icon: 'file' },
+    { time: '2026-01-10 06:00', event: 'CCTV footage recovered from adjacent building', type: 'evidence', icon: 'camera' },
+    { time: '2026-01-11 14:30', event: 'Fingerprints matched to CANON-0042 via NAFIS', type: 'forensic', icon: 'fingerprint' },
+    { time: '2026-01-15 09:00', event: 'Case twin match detected: CASE-002 (82.1%)', type: 'ai', icon: 'sparkles' },
+    { time: '2026-01-18 16:30', event: 'Vehicle KA-02-MB-1234 spotted via ANPR near Whitefield', type: 'surveillance', icon: 'car' },
+    { time: '2026-01-20 11:00', event: 'Arrest warrant WAR-2026-001 issued by 1st ACMM Court', type: 'legal', icon: 'gavel' },
+  ],
+  'CASE-002': [
+    { time: '2026-01-15 02:15', event: 'Burglary at 7th Main, Koramangala', type: 'incident', icon: 'alert' },
+    { time: '2026-01-15 03:00', event: 'FIR registered at Bengaluru Central PS', type: 'fir', icon: 'file' },
+    { time: '2026-01-16 10:00', event: 'Crowbar recovered from scene. MO matches CASE-001', type: 'evidence', icon: 'tool' },
+    { time: '2026-01-17 14:00', event: 'AI twin detection: 82.1% match to CASE-001', type: 'ai', icon: 'sparkles' },
+  ]
+};
+
+// ── Evidence Items per Case ─────────────────────────────────
+export const evidenceItems = {
+  'CASE-001': [
+    { id: 'EV-001-A', type: 'Physical', label: 'Crowbar', description: 'Steel crowbar recovered near rear window. Fingerprints partially lifted.', status: 'Analyzed', confidence: 0.91 },
+    { id: 'EV-001-B', type: 'Digital', label: 'CCTV Footage', description: '4K footage from adjacent building camera showing suspect entry at 03:28 AM.', status: 'Preserved', confidence: 0.85 },
+    { id: 'EV-001-C', type: 'Forensic', label: 'Fingerprints', description: 'Right index fingerprint matched to CANON-0042 via NAFIS database.', status: 'Confirmed', confidence: 0.94 },
+    { id: 'EV-001-D', type: 'Signal', label: 'Cell Tower Ping', description: 'IMEI 864902184910284 pinged BTS-BLR-IND-04 tower at 03:15 AM.', status: 'Verified', confidence: 0.78 },
+    { id: 'EV-001-E', type: 'Vehicle', label: 'ANPR Detection', description: 'Vehicle KA-02-MB-1234 recorded on ANPR camera at Indiranagar junction.', status: 'Confirmed', confidence: 0.96 },
+  ],
+  'CASE-006': [
+    { id: 'EV-006-A', type: 'Digital', label: 'Skimmer Device', description: 'Card skimming device recovered from Jayanagar ATM.', status: 'Lab Analysis', confidence: 0.92 },
+    { id: 'EV-006-B', type: 'Financial', label: 'Bank Records', description: 'Transaction trail showing ₹14,20,000 siphoned across 12 accounts.', status: 'Traced', confidence: 0.88 },
+    { id: 'EV-006-C', type: 'Digital', label: 'IP Logs', description: 'Remote access IP traced to VPN endpoint. Digital forensics ongoing.', status: 'In Progress', confidence: 0.65 },
+  ]
+};
+
+// ── Region Summary Stats for Overview ───────────────────────
+export const regionStats = [
+  { region: 'Bengaluru Urban', activeCases: 6, criticalAlerts: 3, resolvedThisWeek: 4, trend: 'up' },
+  { region: 'Mysuru', activeCases: 1, criticalAlerts: 0, resolvedThisWeek: 2, trend: 'down' },
+  { region: 'Mangaluru', activeCases: 1, criticalAlerts: 1, resolvedThisWeek: 0, trend: 'up' },
+  { region: 'Tumakuru', activeCases: 1, criticalAlerts: 0, resolvedThisWeek: 1, trend: 'stable' },
+];
+

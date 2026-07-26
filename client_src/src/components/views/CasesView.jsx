@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { cases } from '../../data/mock.js';
+import { cases, caseImages } from '../../data/mock.js';
 import { WorkPanel } from '../common/WorkPanel.jsx';
 import { ModeBadge } from '../common/ModeBadge.jsx';
 import { CaseDetailView } from '../cases/CaseDetailView.jsx';
 import { NewCaseRegistration } from '../cases/NewCaseRegistration.jsx';
-import { 
-  OverviewTab, ComplainantTab, VictimsTab, SuspectsTab, 
-  WitnessesTab, EvidenceTab, CrimeSceneTab, TimelineTab, 
-  InvestigationNotesTab, AIAssistantTab 
-} from '../cases/WorkspaceTabs.jsx';
-import { Search, Filter, FileText, Download, CopyCheck, MapPin, Clock, X, ChevronRight, Plus } from 'lucide-react';
+import { Search, Filter, FileText, Download, CopyCheck, MapPin, Clock, X, ChevronRight, Plus, Image as ImageIcon } from 'lucide-react';
 
 export default function CasesView({ activeRole = 'ACP' }) {
   const [filterStatus, setFilterStatus] = useState('all');
@@ -164,7 +159,7 @@ export default function CasesView({ activeRole = 'ACP' }) {
 
                 {/* Detail Tabs Bar */}
                 <div className="flex border-b border-pramaan-border gap-4 text-xs font-semibold overflow-x-auto custom-scrollbar whitespace-nowrap">
-                  {['Overview', 'Complainant', 'Victims', 'Suspects', 'Witnesses', 'Evidence', 'Crime Scene', 'Timeline', 'Notes', 'AI Assistant'].map((tab) => (
+                  {['Overview', 'Twins', 'Complainant', 'Victims', 'Suspects', 'Witnesses', 'Evidence', 'Crime Scene', 'Timeline', 'Notes', 'AI Assistant'].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -180,7 +175,48 @@ export default function CasesView({ activeRole = 'ACP' }) {
                 </div>
 
                 {/* Tab Content Rendering */}
-                {activeTab === 'Overview' && <OverviewTab caseData={selectedCase} />}
+                {activeTab === 'Overview' && (
+                  <div className="space-y-3 text-xs">
+                    {caseImages[selectedCase.id] && (
+                      <div className="rounded-lg border border-pramaan-border bg-pramaan-elevated overflow-hidden p-2">
+                        <div className="flex items-center gap-1.5 text-[10px] font-mono text-pramaan-secondary mb-1.5 px-1 font-semibold">
+                          <ImageIcon size={12} /> Crime Scene / Location Evidence Media:
+                        </div>
+                        <img src={caseImages[selectedCase.id]} alt="Crime Scene Evidence" className="w-full h-44 object-cover rounded border border-pramaan-border/60" />
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-pramaan-elevated border border-pramaan-border font-mono">
+                      <div>
+                        <span className="text-pramaan-text-secondary block text-[10px]">FIR NUMBER:</span>
+                        <span className="text-pramaan-text font-bold">{selectedCase.fir}</span>
+                      </div>
+                      <div>
+                        <span className="text-pramaan-text-secondary block text-[10px]">STATION:</span>
+                        <span className="text-pramaan-text font-bold">{selectedCase.station}</span>
+                      </div>
+                      <div>
+                        <span className="text-pramaan-text-secondary block text-[10px]">INVESTIGATION LEAD:</span>
+                        <span className="text-pramaan-text font-bold">{selectedCase.lead}</span>
+                      </div>
+                      <div>
+                        <span className="text-pramaan-text-secondary block text-[10px]">CRIME SEVERITY:</span>
+                        <span className="text-pramaan-critical font-bold">{selectedCase.priority}</span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-pramaan-elevated border border-pramaan-border space-y-1">
+                      <span className="text-[10px] font-mono text-pramaan-secondary font-semibold">
+                        FIR Narrative (Original Kannada & English):
+                      </span>
+                      <p className="text-pramaan-text font-kannada leading-relaxed text-xs">
+                        ಪ್ರಕರಣ ದಿನಾಂಕ {selectedCase.updated}: ಸಂಶಯಾಸ್ಪದ ವ್ಯಕ್ತಿಗಳ ಚಲನವಲನ ದಾಖಲಾಗಿದೆ. (Modus Operandi: Rear forced entry with crowbar).
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
+                {activeTab === 'Twins' && <CaseDetailView activeRole={activeRole} />}
                 {activeTab === 'Complainant' && <ComplainantTab caseData={selectedCase} />}
                 {activeTab === 'Victims' && <VictimsTab caseData={selectedCase} />}
                 {activeTab === 'Suspects' && <SuspectsTab caseData={selectedCase} />}

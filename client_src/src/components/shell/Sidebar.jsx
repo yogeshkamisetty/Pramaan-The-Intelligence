@@ -24,6 +24,7 @@ const groupsConfig = [
       { key: 'resolution', labelKey: 'navResolution', icon: Fingerprint },
       { key: 'similar', labelKey: 'navSimilar', icon: CopyCheck },
       { key: 'facerec', labelKey: 'navFaceRec', icon: ScanFace },
+      { key: 'fingerprint', labelKey: 'navFingerprint', icon: Fingerprint },
     ],
   },
   {

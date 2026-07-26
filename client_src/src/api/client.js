@@ -94,12 +94,32 @@ function getSeedFallback(endpoint, bodyData) {
       mode: 'seed_fallback',
       intent: 'HYBRID-RAG-SEARCH',
       engine: 'Pramaan Local Vector RAG Engine',
-      response: 'Pramaan Local RAG signature matching identified similar burglary patterns for CASE-001. Top matched twin: CASE-002 (Koramangala Burglary, 82.1% MO Similarity score).\n\nKey Findings:\n1. Modus Operandi matches rear window forced entry using crowbar between 01:00 and 04:00 AM.\n2. Suspect ID CANON-0042 (Mohammed Rafi) is associated with both incidents.\n3. Active warrant WAR-2026-001 issued by 1st ACMM Court.',
-      citations: ['FIR-2024-8841', 'FIR-2024-8842']
+      answer: 'Pramaan AI has identified similar burglary patterns for CASE-001. Top matched twin: **CASE-002** (Koramangala Burglary, 82.1% MO Similarity score).\n\n**Key Findings:**\n1. Modus Operandi matches rear window forced entry using crowbar between 01:00 and 04:00 AM.\n2. Suspect ID CANON-0042 (Mohammed Rafi) is associated with both incidents.\n3. Active warrant WAR-2026-001 issued by 1st ACMM Court.\n4. Vehicle KA-02-MB-1234 flagged at both crime scenes via ANPR data.',
+      response: 'Pramaan Local RAG signature matching identified similar burglary patterns for CASE-001.',
+      rag_summary: 'Twin case detection completed. CASE-002 flagged as strongest match.',
+      evidence: [
+        { chunk_text: 'FIR-2026-0001: Rear window forced entry using crowbar, suspect fled with gold assets worth ₹4,50,000. Time: 03:30 AM. Location: 3rd Cross, Indiranagar, Bengaluru.', document_id: 'FIR-2026-0001', title: 'Burglary at Indiranagar PS' },
+        { chunk_text: 'FIR-2026-0002: Similar MO — rear window crowbar entry at night. Jewelry worth ₹2,20,000 stolen. Suspect CANON-0042 identified via CCTV.', document_id: 'FIR-2026-0002', title: 'Burglary at Koramangala PS' },
+        { chunk_text: 'Suspect Mohammed Rafi (CANON-0042) has active warrant WAR-2026-001. Associated vehicle KA-02-MB-1234 spotted near both crime scenes.', document_id: 'CANON-0042', title: 'Suspect Profile — Mohammed Rafi' }
+      ],
+      confidence_score: 0.87,
+      pipeline: 'Hybrid Vector RAG + Case Twin Engine',
+      citations: ['FIR-2026-0001', 'FIR-2026-0002', 'CANON-0042']
+    };
+  }
+
+  if (endpoint.includes('/rag/explain')) {
+    return {
+      mode: 'seed_fallback',
+      explanation: 'The AI concluded high similarity (82.1%) between CASE-001 and CASE-002 based on: (1) identical modus operandi — rear window crowbar entry, (2) same time window 01:00–04:00 AM, (3) geographic proximity within 800m radius in Indiranagar/Koramangala, (4) shared suspect CANON-0042 (Mohammed Rafi) identified by Fellegi-Sunter entity resolution with 94% confidence.'
     };
   }
 
   return { mode: 'seed_fallback', status: 'ok' };
+}
+
+function isAIEndpoint(endpoint) {
+  return endpoint.includes('/rag/') || endpoint.includes('/intent_router_fn/') || endpoint.includes('/face_fn/explain');
 }
 
 export async function apiFetch(endpoint, options = {}) {
@@ -115,8 +135,10 @@ export async function apiFetch(endpoint, options = {}) {
     try { bodyData = JSON.parse(options.body); } catch (e) {}
   }
 
+  // AI endpoints get 12s timeout since Gemini can take 3-8s; others stay fast at 3s
+  const timeoutMs = isAIEndpoint(endpoint) ? 12000 : 3000;
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3000);
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const res = await fetch(targetUrl, { ...options, headers, signal: controller.signal });

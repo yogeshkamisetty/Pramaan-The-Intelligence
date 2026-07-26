@@ -84,7 +84,15 @@ export default function LiveMapView() {
             </button>
           }
         >
-          <HotspotMap hotspots={hotspots} mode={mode} loading={loading} error={error} height={520} />
+          <HotspotMap 
+            hotspots={hotspots} 
+            mode={mode} 
+            loading={loading} 
+            error={error} 
+            height={520} 
+            selectedClusterId={selectedId}
+            onSelectCluster={(id) => setSelectedId(id)}
+          />
         </WorkPanel>
 
         <div className="flex flex-col gap-4">

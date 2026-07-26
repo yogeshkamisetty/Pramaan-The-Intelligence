@@ -157,6 +157,18 @@ The Pramaan backend is built as a unified, high-performance containerized **Fast
 * **Dynamic Catalyst SDK Binding**: Moved database and SDK initialization from static startup hooks to request-level middleware, ensuring credentials injected during HTTP calls are preserved.
 * **Local Semantic RAG Pipeline**: Built a fully offline, self-contained RAG summary generator (`rag_summary`) in `intent_router_fn.py`. The local pipeline processes query parameters against retrieved data records and returns rich natural language assessments to the UI without requiring external Gemini API keys.
 
+### Phase 7: AI Assistant Overhaul, Gemini API Wiring, & Visual Media System
+* **Automatic `.env` Discovery**: Implemented module-level `.env` loading in `appsail/utils/llm_client.py`, enabling seamless reading of `GEMINI_API_KEY` across local dev and Catalyst AppSail container deployments. Upgraded Gemini model hierarchy to prioritize `gemini-2.0-flash`.
+* **Conversational AI Assistant Workspace**: Overhauled `AssistantView.jsx` into a full conversational chat interface featuring pre-loaded investigation queries (case twin matching, entity resolution), typing indicators, confidence score badges, pipeline tags, and expandable evidence cards.
+* **Extended AI Request Timeout & API Fallbacks**: Updated `client.js` with a 12-second timeout for AI endpoints (`/rag/query`, `/intent_router_fn/`) and structured fallback payloads (`answer`, `evidence`, `confidence_score`, `pipeline`, `citations`).
+* **Wired Citizen HelpDesk Chatbot**: Connected `HelpDeskView.jsx` directly to `api.ragQuery()` for live Gemini-powered citizen Q&A with fallbacks for emergency hotlines (112, 1930) and CrPC Section 154 guidance.
+* **Visual SVG Media & Data Enrichment**: Added high-resolution SVG visual assets (`ksp_badge.svg`, `crime_scene.svg`, `command_center.svg`), suspect profiles with mugshots, station locations, and case timelines in `mock.js`. Integrated a Crime Category Breakdown pie chart into `OverviewView.jsx` and evidence media previews into `CasesView.jsx`.
+
+### Phase 8: Case Twin Workspace Redesign, Real-Time Satellite GEOINT, & Entity Graph Inspector
+* **Case Twin Intelligence Redesign (`SimilarCasesView.jsx`)**: Transformed case twin matching into an intuitive side-by-side comparison workspace with English/Kannada narrative previews, color-coded vector similarity progress bars, 1-click weight presets (*Balanced*, *MO Heavy*, *Geo Radius*), and automated "Why These Cases Matched" evidence checklists.
+* **Real-Time Satellite GEOINT Map (`HotspotMap.jsx` & `LiveMapView.jsx`)**: Added a 1-click map layer switcher supporting **Real-Time Satellite** (`Esri World Imagery`), **Dark Command Vector** (`CartoDB`), and **Street Map** (`OSM`). Integrated animated real-time radar halos for spatial crime hotspots and active target mobile signal pings (`-62 dBm`, `4G LTE`).
+* **Interactive Entity Graph Match Inspector (`EntityGraphView.jsx`)**: Built an interactive pop-up modal/inspector displaying suspect profiles, risk badges, and **explicit match reasons per connected relationship** (e.g., *"82% MO Similarity twin match"*, *"ANPR camera ping at Indiranagar burglary scene"*, *"Fellegi-Sunter 94% probabilistic identity match"*). Added automatic edge highlighting and node focus controls.
+
 ---
 
 ## 5. Issues & Technical Problems Faced and Implemented Solutions

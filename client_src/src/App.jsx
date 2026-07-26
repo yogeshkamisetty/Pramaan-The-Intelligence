@@ -12,6 +12,7 @@ import EntityGraphView from './components/views/EntityGraphView';
 import SimilarCasesView from './components/views/SimilarCasesView';
 import ResolutionView from './components/views/ResolutionView';
 import FaceRecognitionView from './components/views/FaceRecognitionView';
+import FingerprintView from './components/views/FingerprintView';
 import AssistantView from './components/views/AssistantView';
 import DocumentSearchView from './components/views/DocumentSearchView';
 import UploadDocumentsView from './components/views/UploadDocumentsView';
@@ -131,6 +132,7 @@ export default function App() {
                 {view === 'history' && <HistoryView activeRole={activeRole} />}
                 {view === 'resolution' && <ResolutionView activeRole={activeRole} />}
                 {view === 'facerec' && <FaceRecognitionView activeRole={activeRole} />}
+                {view === 'fingerprint' && <FingerprintView activeRole={activeRole} />}
                 {view === 'assistant' && <AssistantView activeRole={activeRole} />}
                 {view === 'docsearch' && <DocumentSearchView activeRole={activeRole} />}
                 {view === 'docupload' && <UploadDocumentsView activeRole={activeRole} />}

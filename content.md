@@ -174,6 +174,12 @@ The Pramaan backend is built as a unified, high-performance containerized **Fast
 * **South India Spatial Hotspots & Multi-Layer Grid**: Expanded demo hotspots to 15 key locations across Karnataka and interstate border corridors. Integrated multi-layer GEOINT grid features: Real-time Mobile Target Signal Pings (`-62 dBm`, IMEIs, speed), BTS Cell Towers, Police Patrol Units (*Cheetah*, *Garuda*, *Panther*), CCTV 4K ANPR Nodes, and Target Movement Trail Polylines.
 * **Map Controls & Interactive Inspector**: Added map search omnibar with smooth pan/fly animations (`MapFlyTo`), individual layer visibility toggles, crime type filter dropdowns, and an interactive selected target inspector drawer with 1-click patrol unit dispatch and geofence alerts.
 
+### Phase 10: Case Twin Intelligence Upgrade & Cross-District Linkage Add-ons
+* **Interactive Target Reference Omnibar & Custom FIR Simulator (`SimilarCasesView.jsx` & `similarCases.js`)**: Enabled selecting any reference case as target (*CASE-001 Indiranagar*, *CASE-004 Mysuru*, *CASE-005 Yelahanka*) or typing/pasting custom FIR narratives directly into an interactive simulator with live Indic Vyakyarth embedding vectorization.
+* **Bilingual Indic Comparator & Match Grade Badges**: Added side-by-side Kannada (Indic text) and English narrative comparison with match classification badges (`🎯 EXACT SIGNATURE TWIN`, `⚡ STRONG PATTERN MATCH`, `⚠️ SUSPECT LINKAGE DETECTED`).
+* **Cross-District Serial Crime Network Diagram**: Implemented visual link diagrams showing interconnected twin cases, police station jurisdictions (Ashoknagar, Hebbal, Hubballi, Belagavi, Attibele), and canonical suspect hubs (`CANON-0042 - Mohammed Rafi`).
+* **Automated Match Reason Checklist & Joint Dispatch Actions**: Integrated automated evidence checklists and 1-click actions for **"Dispatch Cross-Station Alert"** and **"Export Joint Twin Dossier (PDF)"**.
+
 ---
 
 ## 5. Issues & Technical Problems Faced and Implemented Solutions

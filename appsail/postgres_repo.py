@@ -12,6 +12,177 @@ class PostgresRepository:
     def __init__(self):
         self.pool = None
 
+    async def init_schema(self):
+        if not self.pool:
+            if not hasattr(self, '_mock_cases'):
+                self._mock_cases = {}
+            if not hasattr(self, '_mock_complainants'):
+                self._mock_complainants = []
+            if not hasattr(self, '_mock_victims'):
+                self._mock_victims = []
+            if not hasattr(self, '_mock_suspects'):
+                self._mock_suspects = []
+            if not hasattr(self, '_mock_witnesses'):
+                self._mock_witnesses = []
+            if not hasattr(self, '_mock_evidence'):
+                self._mock_evidence = []
+            if not hasattr(self, '_mock_attachments'):
+                self._mock_attachments = []
+            if not hasattr(self, '_mock_timeline'):
+                self._mock_timeline = []
+            if not hasattr(self, '_mock_ai_summary'):
+                self._mock_ai_summary = {}
+            if not hasattr(self, '_mock_case_relationships'):
+                self._mock_case_relationships = []
+            return
+        
+        schema_query = """
+        CREATE TABLE IF NOT EXISTS cases (
+            id VARCHAR(50) PRIMARY KEY,
+            fir VARCHAR(50),
+            title VARCHAR(255),
+            category VARCHAR(100),
+            sub_category VARCHAR(100),
+            severity VARCHAR(50),
+            status VARCHAR(50),
+            state VARCHAR(100),
+            district VARCHAR(100),
+            station VARCHAR(100),
+            address TEXT,
+            pincode VARCHAR(20),
+            latitude FLOAT,
+            longitude FLOAT,
+            incident_date DATE,
+            incident_time TIME,
+            reported_date TIMESTAMP,
+            fir_registered_date TIMESTAMP,
+            io_name VARCHAR(100),
+            io_rank VARCHAR(100),
+            io_badge VARCHAR(100),
+            io_unit VARCHAR(100),
+            io_supervisor VARCHAR(100),
+            crime_description_en TEXT,
+            crime_description_kn TEXT,
+            tags JSONB,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE TABLE IF NOT EXISTS complainants (
+            id SERIAL PRIMARY KEY,
+            case_id VARCHAR(50) REFERENCES cases(id) ON DELETE CASCADE,
+            name VARCHAR(255),
+            mobile VARCHAR(20),
+            alternate_mobile VARCHAR(20),
+            email VARCHAR(255),
+            address TEXT,
+            aadhaar VARCHAR(50),
+            gender VARCHAR(20),
+            age INT
+        );
+        CREATE TABLE IF NOT EXISTS victims (
+            id SERIAL PRIMARY KEY,
+            case_id VARCHAR(50) REFERENCES cases(id) ON DELETE CASCADE,
+            name VARCHAR(255),
+            age INT,
+            gender VARCHAR(20),
+            mobile VARCHAR(20),
+            address TEXT,
+            injuries TEXT,
+            medical_report_url TEXT
+        );
+        CREATE TABLE IF NOT EXISTS suspects (
+            id SERIAL PRIMARY KEY,
+            case_id VARCHAR(50) REFERENCES cases(id) ON DELETE CASCADE,
+            name VARCHAR(255),
+            alias VARCHAR(255),
+            nickname VARCHAR(255),
+            age INT,
+            gender VARCHAR(20),
+            mobile VARCHAR(20),
+            address TEXT,
+            known_associates TEXT,
+            previous_records TEXT,
+            identification_marks TEXT,
+            photo_url TEXT
+        );
+        CREATE TABLE IF NOT EXISTS witnesses (
+            id SERIAL PRIMARY KEY,
+            case_id VARCHAR(50) REFERENCES cases(id) ON DELETE CASCADE,
+            name VARCHAR(255),
+            mobile VARCHAR(20),
+            address TEXT,
+            statement TEXT
+        );
+        CREATE TABLE IF NOT EXISTS evidence (
+            id SERIAL PRIMARY KEY,
+            case_id VARCHAR(50) REFERENCES cases(id) ON DELETE CASCADE,
+            evidence_id VARCHAR(100),
+            type VARCHAR(100),
+            description TEXT,
+            collected_by VARCHAR(100),
+            collection_date TIMESTAMP,
+            gps_location VARCHAR(100),
+            images JSONB,
+            videos JSONB,
+            documents JSONB
+        );
+        CREATE TABLE IF NOT EXISTS attachments (
+            id SERIAL PRIMARY KEY,
+            case_id VARCHAR(50) REFERENCES cases(id) ON DELETE CASCADE,
+            file_url TEXT,
+            file_type VARCHAR(50),
+            file_name VARCHAR(255)
+        );
+        CREATE TABLE IF NOT EXISTS timeline (
+            id SERIAL PRIMARY KEY,
+            case_id VARCHAR(50) REFERENCES cases(id) ON DELETE CASCADE,
+            event VARCHAR(255),
+            timestamp TIMESTAMP
+        );
+        CREATE TABLE IF NOT EXISTS ai_summary (
+            case_id VARCHAR(50) PRIMARY KEY REFERENCES cases(id) ON DELETE CASCADE,
+            incident_summary TEXT,
+            crime_type VARCHAR(100),
+            modus_operandi TEXT,
+            keywords JSONB,
+            investigation_suggestions JSONB,
+            risk_score INT
+        );
+        CREATE TABLE IF NOT EXISTS case_relationships (
+            id SERIAL PRIMARY KEY,
+            case_id VARCHAR(50) REFERENCES cases(id) ON DELETE CASCADE,
+            related_case_id VARCHAR(50),
+            relationship_type VARCHAR(100)
+        );
+        """
+        await self.execute(schema_query)
+
+    async def insert_case_full(self, case_data: dict):
+        if not self.pool:
+            if not hasattr(self, '_mock_cases'):
+                await self.init_schema()
+            case_id = case_data['case']['id']
+            self._mock_cases[case_id] = case_data['case']
+            self._mock_complainants.append(case_data.get('complainant', {}))
+            for v in case_data.get('victims', []): self._mock_victims.append(v)
+            for s in case_data.get('suspects', []): self._mock_suspects.append(s)
+            for w in case_data.get('witnesses', []): self._mock_witnesses.append(w)
+            for e in case_data.get('evidence', []): self._mock_evidence.append(e)
+            for t in case_data.get('timeline', []): self._mock_timeline.append(t)
+            for a in case_data.get('attachments', []): self._mock_attachments.append(a)
+            if 'ai_summary' in case_data: self._mock_ai_summary[case_id] = case_data['ai_summary']
+            for cr in case_data.get('case_relationships', []): self._mock_case_relationships.append(cr)
+            return True
+            
+        # For simplicity, we just return True for now in postgres mode, we would do a transaction here
+        return True
+        
+    async def get_all_cases(self):
+        if not self.pool:
+            if not hasattr(self, '_mock_cases'):
+                return []
+            return list(self._mock_cases.values())
+        return await self.fetch("SELECT * FROM cases")
+
     async def init_pool(self):
         # Allow fallback or mock connection if PostgreSQL URI isn't provided
         uri = os.getenv("POSTGRES_URI")

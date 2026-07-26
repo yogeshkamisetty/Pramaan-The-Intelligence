@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { cases } from '../../data/mock.js';
 import { WorkPanel } from '../common/WorkPanel.jsx';
-import { Cite } from '../common/Cite.jsx';
 import { ModeBadge } from '../common/ModeBadge.jsx';
 import { CaseDetailView } from '../cases/CaseDetailView.jsx';
-import { Search, Filter, FileText, Download, CopyCheck, MapPin, Clock, X, ChevronRight } from 'lucide-react';
+import { NewCaseRegistration } from '../cases/NewCaseRegistration.jsx';
+import { 
+  OverviewTab, ComplainantTab, VictimsTab, SuspectsTab, 
+  WitnessesTab, EvidenceTab, CrimeSceneTab, TimelineTab, 
+  InvestigationNotesTab, AIAssistantTab 
+} from '../cases/WorkspaceTabs.jsx';
+import { Search, Filter, FileText, Download, CopyCheck, MapPin, Clock, X, ChevronRight, Plus } from 'lucide-react';
 
 export default function CasesView({ activeRole = 'ACP' }) {
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCase, setSelectedCase] = useState(cases[0]);
   const [activeTab, setActiveTab] = useState('Overview');
+  const [isNewCaseOpen, setIsNewCaseOpen] = useState(false);
 
   const filteredCases = cases.filter((c) => {
     if (filterStatus !== 'all') {
@@ -45,15 +51,23 @@ export default function CasesView({ activeRole = 'ACP' }) {
       >
         {/* Search & Status Filters */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2 w-full md:w-80 bg-pramaan-elevated border border-pramaan-border rounded-lg px-3 py-1.5">
-            <Search size={14} className="text-pramaan-text-secondary" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search case ID, FIR number, title..."
-              className="bg-transparent text-xs text-pramaan-text placeholder-pramaan-text-secondary outline-none w-full font-sans"
-            />
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="flex items-center gap-2 w-full md:w-80 bg-pramaan-elevated border border-pramaan-border rounded-lg px-3 py-1.5">
+              <Search size={14} className="text-pramaan-text-secondary" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search case ID, FIR number, title..."
+                className="bg-transparent text-xs text-pramaan-text placeholder-pramaan-text-secondary outline-none w-full font-sans"
+              />
+            </div>
+            <button
+              onClick={() => setIsNewCaseOpen(true)}
+              className="px-3 py-1.5 whitespace-nowrap bg-pramaan-primary hover:bg-pramaan-primary-cyan text-pramaan-bg text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Plus size={14} /> New Case
+            </button>
           </div>
 
           <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto">
@@ -149,8 +163,8 @@ export default function CasesView({ activeRole = 'ACP' }) {
                 </div>
 
                 {/* Detail Tabs Bar */}
-                <div className="flex border-b border-pramaan-border gap-4 text-xs font-semibold">
-                  {['Overview', 'Suspects', 'Twins', 'Timeline', 'Evidence/Audit'].map((tab) => (
+                <div className="flex border-b border-pramaan-border gap-4 text-xs font-semibold overflow-x-auto custom-scrollbar whitespace-nowrap">
+                  {['Overview', 'Complainant', 'Victims', 'Suspects', 'Witnesses', 'Evidence', 'Crime Scene', 'Timeline', 'Notes', 'AI Assistant'].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -166,39 +180,16 @@ export default function CasesView({ activeRole = 'ACP' }) {
                 </div>
 
                 {/* Tab Content Rendering */}
-                {activeTab === 'Overview' && (
-                  <div className="space-y-3 text-xs">
-                    <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-pramaan-elevated border border-pramaan-border font-mono">
-                      <div>
-                        <span className="text-pramaan-text-secondary block text-[10px]">FIR NUMBER:</span>
-                        <span className="text-pramaan-text font-bold">{selectedCase.fir}</span>
-                      </div>
-                      <div>
-                        <span className="text-pramaan-text-secondary block text-[10px]">STATION:</span>
-                        <span className="text-pramaan-text font-bold">{selectedCase.station}</span>
-                      </div>
-                      <div>
-                        <span className="text-pramaan-text-secondary block text-[10px]">INVESTIGATION LEAD:</span>
-                        <span className="text-pramaan-text font-bold">{selectedCase.lead}</span>
-                      </div>
-                      <div>
-                        <span className="text-pramaan-text-secondary block text-[10px]">CRIME SEVERITY:</span>
-                        <span className="text-pramaan-critical font-bold">{selectedCase.priority}</span>
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-lg bg-pramaan-elevated border border-pramaan-border space-y-1">
-                      <span className="text-[10px] font-mono text-pramaan-secondary font-semibold">
-                        FIR Narrative (Original Kannada & English):
-                      </span>
-                      <p className="text-pramaan-text font-kannada leading-relaxed text-xs">
-                        ಪ್ರಕರಣ ದಿನಾಂಕ {selectedCase.updated}: ಸಂಶಯಾಸ್ಪದ ವ್ಯಕ್ತಿಗಳ ಚಲನವಲನ ದಾಖಲಾಗಿದೆ. (Modus Operandi: Rear forced entry with crowbar).
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'Twins' && <CaseDetailView activeRole={activeRole} />}
+                {activeTab === 'Overview' && <OverviewTab caseData={selectedCase} />}
+                {activeTab === 'Complainant' && <ComplainantTab caseData={selectedCase} />}
+                {activeTab === 'Victims' && <VictimsTab caseData={selectedCase} />}
+                {activeTab === 'Suspects' && <SuspectsTab caseData={selectedCase} />}
+                {activeTab === 'Witnesses' && <WitnessesTab caseData={selectedCase} />}
+                {activeTab === 'Evidence' && <EvidenceTab caseData={selectedCase} />}
+                {activeTab === 'Crime Scene' && <CrimeSceneTab caseData={selectedCase} />}
+                {activeTab === 'Timeline' && <TimelineTab caseData={selectedCase} />}
+                {activeTab === 'Notes' && <InvestigationNotesTab caseData={selectedCase} />}
+                {activeTab === 'AI Assistant' && <AIAssistantTab caseData={selectedCase} />}
               </div>
             ) : (
               <div className="p-12 text-center text-xs text-pramaan-text-secondary bg-pramaan-surface rounded-lg border border-pramaan-border">
@@ -208,6 +199,12 @@ export default function CasesView({ activeRole = 'ACP' }) {
           </div>
         </div>
       </WorkPanel>
+
+      <NewCaseRegistration 
+        isOpen={isNewCaseOpen} 
+        onClose={() => setIsNewCaseOpen(false)} 
+        onCaseRegistered={(newCase) => setSelectedCase(newCase)} 
+      />
     </div>
   );
 }

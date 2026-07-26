@@ -10,7 +10,7 @@ from slowapi.errors import RateLimitExceeded
 from rate_limit import limiter  # single shared limiter (see rate_limit.py)
 from repositories import CatalystRepository
 from postgres_repo import pg_repo
-from routers import gateway_fn, entity_resolution_fn, case_twin_fn, intent_router_fn, graph_fn, export_fn, rag_fn
+from routers import gateway_fn, entity_resolution_fn, case_twin_fn, intent_router_fn, graph_fn, export_fn, rag_fn, case_fn
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -26,6 +26,7 @@ repo = CatalystRepository()
 @app.on_event("startup")
 async def startup_event():
     await pg_repo.init_pool()
+    await pg_repo.init_schema()
 
 @app.on_event("shutdown")
 async def shutdown_event():
@@ -133,7 +134,7 @@ app.include_router(intent_router_fn.router)
 app.include_router(graph_fn.router)
 app.include_router(export_fn.router)  # SmartBrowz PDF export (own_case_detail)
 app.include_router(rag_fn.router)     # New Hybrid RAG API
-# app.include_router(face_fn.router)    # Face Recognition & Police Dataset
+app.include_router(case_fn.router)    # New Case Registration API
 
 # 6. Rate limiting is applied directly on the router endpoints themselves
 #    (entity_resolution_fn.resolve @ 30/min, intent_router_fn.route @ 20/min)

@@ -16,7 +16,7 @@
 
 ---
 
-[**🌐 Live Demo**](https://pramaanksp.zohocatalyst.com) &nbsp;|&nbsp; [**📄 Pitch Deck**](./PITCH_DECK.md) &nbsp;|&nbsp; [**📐 Solution Document**](./SOLUTION.md) &nbsp;|&nbsp; [**🎬 Demo Script**](./DEMO_VIDEO_SCRIPT.md) &nbsp;|&nbsp; [**📊 Benchmark Report**](./BENCHMARK_REPORT.md)
+[**🌐 Live Demo**](https://pramaan-intelligence.onslate.in/) &nbsp;|&nbsp; [**📄 Pitch Deck**](./PITCH_DECK.md) &nbsp;|&nbsp; [**📐 Solution Document**](./SOLUTION.md) &nbsp;|&nbsp; [**📊 Benchmark Report**](./BENCHMARK_REPORT.md)
 
 </div>
 
@@ -368,7 +368,7 @@ KSP/
 ├── PITCH_DECK.md                  # Full hackathon pitch deck content
 ├── SOLUTION.md                    # Detailed technical solution document
 ├── BENCHMARK_REPORT.md            # Performance benchmark test results
-├── DEMO_VIDEO_SCRIPT.md           # Full demo walkthrough script
+
 ├── EVALUATION_ALIGNMENT.md        # KSP Datathon evaluation criteria alignment
 ├── TESTING_GUIDE.md               # Testing and validation guide
 ├── DESIGN_SPEC.md                 # UI/UX design specification
